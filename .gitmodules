@@ -1,0 +1,3 @@
+[submodule "xgboost"]
+	path = xgboost
+	url = https://github.com/criteo-forks/xgboost
