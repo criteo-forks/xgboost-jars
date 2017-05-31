@@ -14,7 +14,7 @@ matrix:
 
 env:
   global:
-    - LIBHDFS_DEV=$HOME/libhdfs-dev
+    - LIBHDFS_DIR=$HOME/libhdfs-dev
     - HADOOP_VERSION="2.6.0-cdh5.5.0"
     - SPARK_VERSION=2.1.0
     - SCALA_VERSION=2.10.6
@@ -22,13 +22,13 @@ env:
 before_install:
   - export XGBOOST_VERSION=42 #`git describe --abbrev=0 --tags`
   # - git checkout $XGBOOST_VERSION
-  - if [ ! -z `find $LIBHDFS_DEV -prune -empty` ]; then ./install_libhdfs.sh; fi
+  - if [ ! -z `find $LIBHDFS_DIR -prune -empty` ]; then python3 ./install_libhdfs.py; fi
 
 install:
   - cd xgboost
   - mkdir -p lib/native
-  - cp $LIBHDFS_DEV/libhdfs.a lib/native
-  - cp $LIBHDFS_DEV/hdfs.h dmlc-core/include/
+  - cp $LIBHDFS_DIR/libhdfs.a lib/native
+  - cp $LIBHDFS_DIR/hdfs.h dmlc-core/include/
   - sed -i -e 's/<hdfs.h>/"hdfs.h"/g' dmlc-core/src/io/hdfs_filesys.h
   # TODO: submit upstream.
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then sed -i -e 's/-rpath=$(LIBJVM)/-rpath,$(LIBJVM)/' dmlc-core/make/dmlc.mk; fi
@@ -48,7 +48,7 @@ script:
 cache:
   directories:
     - $HOME/.m2
-    - $LIBHDFS_DEV
+    - $LIBHDFS_DIR
 
 deploy:
   provider: releases
