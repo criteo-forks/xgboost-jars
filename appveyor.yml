@@ -1,0 +1,28 @@
+environment:
+  global:
+    CYG_ROOT: C:/cygwin64
+    CYG_CACHE: C:/cygwin/var/cache/setup
+    CYG_MIRROR: http://mirrors.kernel.org/sourceware/cygwin
+    CYG_ARCH: x86_64
+  matrix:
+    - JAVA_HOME: C:\Program Files\Java\jdk1.8.0
+    # - JAVA_HOME: C:\Program Files (x86)\Java\jdk1.8.0
+
+clone_script:
+  - git clone -q --branch=%APPVEYOR_REPO_BRANCH% https://github.com/%APPVEYOR_REPO_NAME%.git %APPVEYOR_BUILD_FOLDER%
+  - cd %APPVEYOR_BUILD_FOLDER%
+  - git checkout -qf %APPVEYOR_REPO_COMMIT%
+  - git submodule update --init --recursive
+
+install:
+  - 'appveyor DownloadFile http://cygwin.com/setup-%CYG_ARCH%.exe -FileName setup.exe'
+  - 'setup.exe -qnNdO -R "%CYG_ROOT%" -s "%CYG_MIRROR%" -l "%CYG_CACHE%" -P make -P gcc-core -P gcc-g++ >NUL'
+  - 'setup.exe -qnNdO -R "%CYG_ROOT%" -s "%CYG_MIRROR%" -l "%CYG_CACHE%" -P wget -P libprotobuf-devel >NUL'
+  - '%CYG_ROOT%/bin/bash -lc "cygcheck -dc cygwin"'
+  - '%CYG_ROOT%/bin/bash -lc "cd /cygdrive/c/projects/xgboost-jars && ./install_libhdfs.sh"'
+
+build_script:
+  - java -version
+
+matrix:
+  fast_finish: true
