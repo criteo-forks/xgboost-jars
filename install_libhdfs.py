@@ -3,6 +3,7 @@ from __future__ import print_function, unicode_literals
 import os
 import shutil
 import subprocess
+import sys
 import tarfile
 import zipfile
 try:
@@ -14,26 +15,25 @@ try:
 except ImportError:
     DEVNULL = open(os.devnull, "wb")
 
-from _internal import run, sed_inplace, maybe_makedirs
+from _internal import run, sed_inplace, maybe_makedirs, safe_path
 
 
 def install_dependencies():
-    if "TRAVIS" in os.environ:
-        if os.environ["TRAVIS_OS_NAME"] == "osx":
-            run("brew install protobuf@2.5", stdout=open(os.devnull, "wb"))
-            os.environ["HADOOP_PROTOC_CDH5_PATH"] = \
-                "/usr/local/opt/protobuf@2.5/bin/protoc"
+    if sys.platform == "darwin":
+        run("brew install protobuf@2.5", stdout=open(os.devnull, "wb"))
+        os.environ["HADOOP_PROTOC_CDH5_PATH"] = \
+            "/usr/local/opt/protobuf@2.5/bin/protoc"
 
-            # Make maven-antrun-plugin happy and put tools.jar to the
-            # magical place.
-            java_home = os.environ["JAVA_HOME"] = subprocess.check_output(
-                "/usr/libexec/java_home").strip().decode()
-            # Not pure Python because we need sudo.
-            run("sudo mkdir " + os.path.join(java_home, "Classes"))
-            run("sudo ln -s {} {}".format(
-                os.path.join(java_home, "lib", "tools.jar"),
-                os.path.join(java_home, "Classes", "classes.jar")))
-    elif "APPVEYOR" in os.environ:
+        # Make maven-antrun-plugin happy and put tools.jar to the
+        # magical place.
+        java_home = os.environ["JAVA_HOME"] = subprocess.check_output(
+            "/usr/libexec/java_home").strip().decode()
+        # Not pure Python because we need sudo.
+        run("sudo mkdir " + os.path.join(java_home, "Classes"))
+        run("sudo ln -s {} {}".format(
+            os.path.join(java_home, "lib", "tools.jar"),
+            os.path.join(java_home, "Classes", "classes.jar")))
+    elif sys.platform in ["cygwin", "win32"]:
         protobuf_archive, _headers = urlretrieve(
             "https://github.com/google/protobuf/releases/download/"
             "v2.5.0/protoc-2.5.0-win32.zip")
@@ -74,8 +74,24 @@ if __name__ == "__main__":
                 "<module>hadoop-annotations</module>",
                 "")
 
+    if sys.platform in ["cygwin", "win32"]:
+        target = "native-win"
+
+        sed_inplace(
+            os.path.join("hadoop-hdfs-project", "hadoop-hdfs", "pom.xml"),
+            "Visual Studio 10",
+            "Visual Studio 14")
+
+        for sln in [
+            "hadoop-common-project\\hadoop-common\\src\\main\\native\\native.sln",
+            "hadoop-common-project\\hadoop-common\\src\\main\\winutils\\winutils.sln"
+        ]:
+            run("devenv /upgrade " + sln)
+    else:
+        target = "native"
+
     run("mvn -q install -pl :hadoop-maven-plugins -am")
-    run("mvn -q compile -Pnative -pl :hadoop-hdfs -am",
+    run("mvn -q compile -P{} -pl :hadoop-hdfs -am".format(target),
         env=dict(os.environ, CFLAGS="-fPIC"))
 
     libhdfs_dir = os.environ["LIBHDFS_DIR"]
@@ -83,8 +99,16 @@ if __name__ == "__main__":
     print("Copying libhdfs into " + libhdfs_dir)
     os.chdir(os.path.join("hadoop-hdfs-project", "hadoop-hdfs"))
 
-    for file in [
-        "target/native/target/usr/local/lib/libhdfs.a",
-        "src/main/native/libhdfs/hdfs.h"
-    ]:
-        shutil.copy(os.path.join(*file.split("/")), libhdfs_dir)
+    if sys.platform in ["cygwin", "win32"]:
+        libhdfs_files = [
+            "target\\native\\target\\bin\\RelWithDebInfo\\hdfs.lib",
+            "src\\main\\native\\libhdfs\\hdfs.h"
+        ]
+    else:
+        libhdfs_files = [
+            "target/native/target/usr/local/lib/libhdfs.a",
+            "src/main/native/libhdfs/hdfs.h"
+        ]
+
+    for file in libhdfs_files:
+        shutil.copy(file, libhdfs_dir)

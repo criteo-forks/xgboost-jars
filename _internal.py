@@ -13,13 +13,17 @@ import tempfile
 if sys.platform in ["cygwin", "win32"]:
     _bltn_open = tarfile.bltn_open
 
-    def long_bltn_open(name, *args, **kwargs):
+    def safe_path(path):
+        if not os.path.isabs(path):
+            path = os.path.join(os.getcwd(), path)
+
         # http://msdn.microsoft.com/en-us/library/aa365247%28v=vs.85%29.aspx#maxpath
-        if len(name) >= 200:
-            if not os.path.isabs(name):
-                name = os.path.join(os.getcwd(), name)
-            name = "\\\\?\\" + os.path.normpath(name)
-        return _bltn_open(name, *args, **kwargs)
+        if len(path) >= 200:
+            path = "\\\\?\\" + os.path.normpath(path)
+        return path
+
+    def long_bltn_open(name, *args, **kwargs):
+        return _bltn_open(safe_path(name), *args, **kwargs)
 
     tarfile.bltn_open = long_bltn_open
 
