@@ -14,17 +14,15 @@ matrix:
 
 env:
   global:
+    - XGBOOST_VERSION=42
     - LIBHDFS_DIR=$HOME/libhdfs-dev
     - HADOOP_VERSION="2.6.0-cdh5.5.0"
     - SPARK_VERSION=2.1.0
     - SCALA_VERSION=2.10.6
 
-before_install:
-  - export XGBOOST_VERSION=42 #`git describe --abbrev=0 --tags`
-  # - git checkout $XGBOOST_VERSION
-  - if [ ! -z `find $LIBHDFS_DIR -prune -empty` ]; then python3 ./install_libhdfs.py; fi
-
 install:
+  - python --version
+  - if [ ! -z `find $LIBHDFS_DIR -prune -empty` ]; then python ./install_libhdfs.py; fi
   - cd xgboost
   - mkdir -p lib/native
   - cp $LIBHDFS_DIR/libhdfs.a lib/native

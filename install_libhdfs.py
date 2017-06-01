@@ -1,13 +1,23 @@
+from __future__ import print_function, unicode_literals
+
 import errno
 import os
 import shutil
 import subprocess
+import sys
 import tarfile
 import tempfile
-from urllib.request import urlretrieve
+try:
+    from urllib.request import urlretrieve
+except ImportError:
+    from urllib import urlretrieve
+try:
+    from subprocess import DEVNULL
+except ImportError:
+    DEVNULL = open(os.devnull, "wb")
 
 
-def sed_inplace(path: str, pattern: str, sub: str):
+def sed_inplace(path, pattern, sub):
     """Replaces all occurences of ``pattern`` in a file with ``sub``.
 
     A file is modified **in-place**.
@@ -37,7 +47,7 @@ def maybe_makedirs(path):
 def install_dependencies():
     if "TRAVIS" in os.environ:
         if os.environ["TRAVIS_OS_NAME"] == "osx":
-            run("brew install protobuf@2.5", stdout=subprocess.DEVNULL)
+            run("brew install protobuf@2.5", stdout=os.devnul)
             os.environ["HADOOP_PROTOC_CDH5_PATH"] = \
                 "/usr/local/opt/protobuf@2.5/bin/protoc"
 
