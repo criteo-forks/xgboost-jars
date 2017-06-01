@@ -113,7 +113,8 @@ if __name__ == "__main__":
                 "")
 
     run("mvn -q install -pl :hadoop-maven-plugins -am")
-    run("CFLAGS=-fPIC mvn -q compile -Pnative -pl :hadoop-hdfs -am")
+    run("mvn -q compile -Pnative -pl :hadoop-hdfs -am",
+        env=dict(os.environ, CFLAGS="-fPIC"))
 
     libhdfs_dir = os.environ["LIBHDFS_DIR"]
     maybe_makedirs(libhdfs_dir)
