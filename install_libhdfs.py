@@ -47,7 +47,7 @@ def maybe_makedirs(path):
 def install_dependencies():
     if "TRAVIS" in os.environ:
         if os.environ["TRAVIS_OS_NAME"] == "osx":
-            run("brew install protobuf@2.5", stdout=os.devnul)
+            run("brew install protobuf@2.5", stdout=os.devnull)
             os.environ["HADOOP_PROTOC_CDH5_PATH"] = \
                 "/usr/local/opt/protobuf@2.5/bin/protoc"
 
