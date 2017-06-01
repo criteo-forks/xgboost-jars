@@ -17,6 +17,7 @@ clone_script:
 
 install:
   - 'SET PATH=C:\Python36-x64\python.exe;%PATH%'
+  - 'SET PATH=C:\mingw-w64\x86_64-6.3.0-posix-seh-rt_v5-rev1;%PATH%'
   - ps: 'If (!(Test-Path -Path $env:LIBHDFS_DEV)) { python install_libhdfs.py }'
 
 build_script:
