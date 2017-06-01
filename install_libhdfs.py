@@ -14,7 +14,6 @@ try:
 except ImportError:
     DEVNULL = open(os.devnull, "wb")
 
-
 from _internal import run, sed_inplace, maybe_makedirs
 
 
@@ -25,14 +24,15 @@ def install_dependencies():
             os.environ["HADOOP_PROTOC_CDH5_PATH"] = \
                 "/usr/local/opt/protobuf@2.5/bin/protoc"
 
-            # TODO: do we need sudo?
             # Make maven-antrun-plugin happy and put tools.jar to the
             # magical place.
             java_home = os.environ["JAVA_HOME"] = subprocess.check_output(
                 "/usr/libexec/java_home").strip().decode()
-            maybe_makedirs(os.path.join(java_home, "Classes"))
-            os.link(os.path.join(java_home, "lib", "tools.jar"),
-                    os.path.join(java_home, "Classes", "classes.jar"))
+            # Not pure Python because we need sudo.
+            run("sudo mkdir " + os.path.join(java_home, "Classes"))
+            run("sudo ln -s {} {}".format(
+                os.path.join(java_home, "lib", "tools.jar"),
+                os.path.join(java_home, "Classes", "classes.jar")))
     elif "APPVEYOR" in os.environ:
         protobuf_archive, _headers = urlretrieve(
             "https://github.com/google/protobuf/releases/download/"
