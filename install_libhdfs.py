@@ -40,6 +40,9 @@ def install_dependencies():
         with zipfile.ZipFile(protobuf_archive, "r") as zf:
             zf.extractall()
 
+        os.environ["HADOOP_PROTOC_CDH5_PATH"] = \
+            os.path.join(os.getcwd(), "protoc.exe")
+
 
 if __name__ == "__main__":
     install_dependencies()
