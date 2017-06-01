@@ -16,35 +16,20 @@ env:
   global:
     - XGBOOST_VERSION=42
     - LIBHDFS_DIR=$HOME/libhdfs-dev
-    - HADOOP_VERSION="2.6.0-cdh5.5.0"
+    - HADOOP_VERSION=2.6.0-cdh5.5.0
     - SPARK_VERSION=2.1.0
     - SCALA_VERSION=2.10.6
 
 install:
   - if [ ! -z `find $LIBHDFS_DIR -prune -empty` ]; then python ./install_libhdfs.py; fi
-  - cd xgboost
-  - mkdir -p lib/native
-  - cp $LIBHDFS_DIR/libhdfs.a lib/native
-  - cp $LIBHDFS_DIR/hdfs.h dmlc-core/include/
-  - sed -i -e 's/<hdfs.h>/"hdfs.h"/g' dmlc-core/src/io/hdfs_filesys.h
-  # TODO: submit upstream.
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then sed -i -e 's/-rpath=$(LIBJVM)/-rpath,$(LIBJVM)/' dmlc-core/make/dmlc.mk; fi
-  - cp ../config_${TRAVIS_OS_NAME}.mk config.mk
-  - cd jvm-packages
-  - mvn -q -B versions:set -DnewVersion=${XGBOOST_VERSION}
-  # versions:update-property only updates properties which define
-  # artifact versions, therefore we have to resort to sed.
-  - sed -i -e 's/<scala.binary.version>2.11/<scala.binary.version>'${SCALA_VERSION%.*}'/' pom.xml
-  - mvn -q versions:update-property -Dproperty=scala.version -DnewVersion="[$SCALA_VERSION]"
-  - mvn -q versions:update-property -Dproperty=spark.version -DnewVersion="[$SPARK_VERSION]"
-  - HADOOP_HOME=. mvn -q install -pl :xgboost4j,:xgboost4j-spark -DskipTests -Dmaven.test.skip
+  - python ./install_xgboost.py
 
 script:
+  - cd xgboost/jvm-packages
   - HADOOP_HOME=. mvn -q package -pl :xgboost4j,:xgboost4j-spark
 
 cache:
   directories:
-    - $HOME/.m2
     - $LIBHDFS_DIR
 
 deploy:
