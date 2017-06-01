@@ -7,6 +7,7 @@ import subprocess
 import sys
 import tarfile
 import tempfile
+import zipfile
 try:
     from urllib.request import urlretrieve
 except ImportError:
@@ -15,6 +16,21 @@ try:
     from subprocess import DEVNULL
 except ImportError:
     DEVNULL = open(os.devnull, "wb")
+
+
+# From https://stackoverflow.com/a/19445241/262432
+if sys.platform in ["cygwin", "win32"]:
+    _bltn_open = tarfile.bltn_open
+
+    def long_bltn_open(name, *args, **kwargs):
+        # http://msdn.microsoft.com/en-us/library/aa365247%28v=vs.85%29.aspx#maxpath
+        if len(name) >= 200:
+            if not os.path.isabs(name):
+                name = os.path.join(os.getcwd(), name)
+            name = "\\\\?\\" + os.path.normpath(name)
+        return _bltn_open(name, *args, **kwargs)
+
+    tarfile.bltn_open = long_bltn_open
 
 
 def sed_inplace(path, pattern, sub):
@@ -47,7 +63,7 @@ def maybe_makedirs(path):
 def install_dependencies():
     if "TRAVIS" in os.environ:
         if os.environ["TRAVIS_OS_NAME"] == "osx":
-            run("brew install protobuf@2.5", stdout=os.devnull)
+            run("brew install protobuf@2.5", stdout=open(os.devnull, "wb"))
             os.environ["HADOOP_PROTOC_CDH5_PATH"] = \
                 "/usr/local/opt/protobuf@2.5/bin/protoc"
 
