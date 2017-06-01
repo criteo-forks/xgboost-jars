@@ -21,7 +21,6 @@ env:
     - SCALA_VERSION=2.10.6
 
 install:
-  - python --version
   - if [ ! -z `find $LIBHDFS_DIR -prune -empty` ]; then python ./install_libhdfs.py; fi
   - cd xgboost
   - mkdir -p lib/native

@@ -70,7 +70,8 @@ def install_dependencies():
             # TODO: do we need sudo?
             # Make maven-antrun-plugin happy and put tools.jar to the
             # magical place.
-            java_home = os.environ["JAVA_HOME"]
+            java_home = os.environ["JAVA_HOME"] = subprocess.check_output(
+                "/usr/libexec/java_home").strip().decode()
             maybe_makedirs(os.path.join(java_home, "Classes"))
             os.link(os.path.join(java_home, "lib", "tools.jar"),
                     os.path.join(java_home, "Classes", "classes.jar"))
@@ -114,7 +115,7 @@ if __name__ == "__main__":
 
     run("mvn -q install -pl :hadoop-maven-plugins -am")
     run("mvn -q compile -Pnative -pl :hadoop-hdfs -am",
-        env=dict(os.environ, CFLAGS="-fPIC"))
+        env=dict(os.environ, CFLAGS=str("-fPIC")))
 
     libhdfs_dir = os.environ["LIBHDFS_DIR"]
     maybe_makedirs(libhdfs_dir)
