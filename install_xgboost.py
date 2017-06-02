@@ -49,7 +49,7 @@ if __name__ == "__main__":
                     "<failOnViolation>false")
 
         with cd(".."):
-            run("make jvm")
+            run("mingw32-make jvm")
 
     run("mvn -q install -pl :xgboost4j,:xgboost4j-spark "
         "-DskipTests -Dmaven.test.skip",

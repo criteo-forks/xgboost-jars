@@ -17,9 +17,10 @@ clone_script:
   - cd %APPVEYOR_BUILD_FOLDER%
   - git checkout -qf %APPVEYOR_REPO_COMMIT%
   - git submodule update --init --recursive
+  - git submodule foreach --recursive git pull origin master
 
 install:
-  - 'SET PATH=C:\msys64\usr\bin;%PATH%'
+  - 'SET PATH=C:\mingw-w64\x86_64-6.3.0-posix-seh-rt_v5-rev1\mingw64\bin;%PATH%'
   - 'SET PATH=%VS140COMNTOOLS%\..\IDE;%PATH%'
   - ps: If (!(Test-Path -Path $env:LIBHDFS_DIR)) { iex 'C:\Python36-x64\python.exe install_libhdfs.py' }
   - 'C:\Python36-x64\python.exe install_xgboost.py'
@@ -27,5 +28,5 @@ install:
 build_script:
   - java -version
 
-matrix:
-  fast_finish: true
+cache:
+  - '%LIBHDFS_DIR%'
