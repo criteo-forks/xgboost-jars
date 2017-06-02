@@ -7,6 +7,7 @@ import subprocess
 import sys
 import tarfile
 import tempfile
+from contextlib import contextmanager
 
 
 # From https://stackoverflow.com/a/19445241/262432
@@ -26,6 +27,17 @@ if sys.platform in ["cygwin", "win32"]:
         return _bltn_open(safe_path(name), *args, **kwargs)
 
     tarfile.bltn_open = long_bltn_open
+
+
+@contextmanager
+def cd(path):
+    cwd = os.getcwd()
+    os.chdir(path)
+    print("cd " + path)
+    try:
+        yield path
+    finally:
+        os.chdir(cwd)
 
 
 def sed_inplace(path, pattern, sub):

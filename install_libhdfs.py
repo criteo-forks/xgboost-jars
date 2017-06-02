@@ -15,7 +15,7 @@ try:
 except ImportError:
     DEVNULL = open(os.devnull, "wb")
 
-from _internal import run, sed_inplace, maybe_makedirs, safe_path
+from _internal import run, sed_inplace, maybe_makedirs, safe_path, cd
 
 
 def install_dependencies():
@@ -44,24 +44,7 @@ def install_dependencies():
             os.path.join(os.getcwd(), "protoc.exe")
 
 
-if __name__ == "__main__":
-    install_dependencies()
-
-    hadoop_dir = "hadoop-" + os.environ["HADOOP_VERSION"]
-
-    if not os.path.exists(hadoop_dir):
-        hadoop_archive = hadoop_dir + ".tar.gz"
-        print("Downloading " + hadoop_archive)
-        urlretrieve("http://archive.cloudera.com/cdh5/cdh/5/" + hadoop_archive,
-                    hadoop_archive)
-        with tarfile.open(hadoop_archive, "r:gz") as tf:
-            tf.extractall()
-        assert os.path.exists(hadoop_dir)
-
-    os.chdir(os.path.join(hadoop_dir, "src"))
-
-    print("Building libhdfs")
-
+def build():
     # Make maven-enforcer-plugin happy.
     # TODO: autodetect Java version?
     sed_inplace("pom.xml", "<javaVersion>1.7", "<javaVersion>1.8")
@@ -94,21 +77,40 @@ if __name__ == "__main__":
     run("mvn -q compile -P{} -pl :hadoop-hdfs -am".format(target),
         env=dict(os.environ, CFLAGS="-fPIC"))
 
-    libhdfs_dir = os.environ["LIBHDFS_DIR"]
-    maybe_makedirs(libhdfs_dir)
-    print("Copying libhdfs into " + libhdfs_dir)
-    os.chdir(os.path.join("hadoop-hdfs-project", "hadoop-hdfs"))
 
-    if sys.platform in ["cygwin", "win32"]:
-        libhdfs_files = [
-            "target\\native\\target\\bin\\RelWithDebInfo\\hdfs.lib",
-            "src\\main\\native\\libhdfs\\hdfs.h"
-        ]
-    else:
-        libhdfs_files = [
-            "target/native/target/usr/local/lib/libhdfs.a",
-            "src/main/native/libhdfs/hdfs.h"
-        ]
+if __name__ == "__main__":
+    install_dependencies()
 
-    for file in libhdfs_files:
-        shutil.copy(file, libhdfs_dir)
+    hadoop_dir = "hadoop-" + os.environ["HADOOP_VERSION"]
+
+    if not os.path.exists(hadoop_dir):
+        hadoop_archive = hadoop_dir + ".tar.gz"
+        print("Downloading " + hadoop_archive)
+        urlretrieve("http://archive.cloudera.com/cdh5/cdh/5/" + hadoop_archive,
+                    hadoop_archive)
+        with tarfile.open(hadoop_archive, "r:gz") as tf:
+            tf.extractall()
+        assert os.path.exists(hadoop_dir)
+
+    print("Building libhdfs")
+    with cd(os.path.join(hadoop_dir, "src")):
+        build()
+
+        libhdfs_dir = os.environ["LIBHDFS_DIR"]
+        maybe_makedirs(libhdfs_dir)
+        print("Copying libhdfs into " + libhdfs_dir)
+
+        if sys.platform in ["cygwin", "win32"]:
+            libhdfs_files = [
+                "target\\native\\target\\bin\\RelWithDebInfo\\hdfs.lib",
+                "src\\main\\native\\libhdfs\\hdfs.h"
+            ]
+        else:
+            libhdfs_files = [
+                "target/native/target/usr/local/lib/libhdfs.a",
+                "src/main/native/libhdfs/hdfs.h"
+            ]
+
+        with cd(os.path.join("hadoop-hdfs-project", "hadoop-hdfs")):
+            for file in libhdfs_files:
+                shutil.copy(file, libhdfs_dir)
