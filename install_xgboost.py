@@ -42,6 +42,12 @@ if __name__ == "__main__":
     run("mvn -q versions:update-property -Dproperty=spark.version "
         "-DnewVersion=[{}]".format(os.environ["SPARK_VERSION"]))
 
+    # Remove once https://github.com/dmlc/xgboost/pull/2370 is merged.
+    if sys.platform in ["cygwin", "win32"]:
+        sed_inplace("pom.xml",
+                    "<failOnViolation>true",
+                    "<failOnViolation>false")
+
     run("mvn -q install -pl :xgboost4j,:xgboost4j-spark "
         "-DskipTests -Dmaven.test.skip",
         env=dict(os.environ, HADOOP_HOME="."))
