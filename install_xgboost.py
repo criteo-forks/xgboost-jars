@@ -10,7 +10,10 @@ from _internal import run, sed_inplace, maybe_makedirs
 if __name__ == "__main__":
     os.chdir("xgboost")
     maybe_makedirs(os.path.join("lib", "native"))
-    shutil.copy(os.path.join(os.environ["LIBHDFS_DIR"], "libhdfs.a"),
+    libhdfs_static = \
+        "hdfs.lib" if sys.platform in ["cygwin", "win32"] else "libhdfs.a"
+
+    shutil.copy(os.path.join(os.environ["LIBHDFS_DIR"], libhdfs_static),
                 os.path.join("lib", "native"))
     shutil.copy(os.path.join(os.environ["LIBHDFS_DIR"], "hdfs.h"),
                 os.path.join("dmlc-core", "include"))
