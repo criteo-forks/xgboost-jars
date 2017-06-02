@@ -4,7 +4,7 @@ import os
 import re
 import shutil
 import sys
-from _internal import run, sed_inplace, maybe_makedirs
+from _internal import run, sed_inplace, maybe_makedirs, cd
 
 
 if __name__ == "__main__":
@@ -47,6 +47,9 @@ if __name__ == "__main__":
         sed_inplace("pom.xml",
                     "<failOnViolation>true",
                     "<failOnViolation>false")
+
+        with cd(".."):
+            run("make jvm")
 
     run("mvn -q install -pl :xgboost4j,:xgboost4j-spark "
         "-DskipTests -Dmaven.test.skip",
