@@ -19,9 +19,9 @@ clone_script:
   - git submodule update --init --recursive
 
 install:
-  - 'SET PATH=C:\mingw-w64\x86_64-6.3.0-posix-seh-rt_v5-rev1;%PATH%'
   - 'SET PATH=%VS140COMNTOOLS%\..\IDE;%PATH%'
   - ps: If (!(Test-Path -Path $env:LIBHDFS_DIR)) { iex 'C:\Python36-x64\python.exe install_libhdfs.py' }
+  - 'C:\Python36-x64\python.exe install_xgboost.py'
 
 build_script:
   - java -version
