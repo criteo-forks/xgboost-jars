@@ -18,12 +18,6 @@ if __name__ == "__main__":
     shutil.copy(os.path.join(os.environ["LIBHDFS_DIR"], "hdfs.h"),
                 os.path.join("dmlc-core", "include"))
 
-    if sys.platform == "darwin":
-        # See https://github.com/dmlc/dmlc-core/pull/258.
-        sed_inplace(os.path.join("dmlc-core", "make", "dmlc.mk"),
-                    "-rpath=$(LIBJVM)",
-                    "-rpath,$(LIBJVM)")
-
     shutil.copy(os.path.join("..", "config_" + sys.platform + ".mk"),
                 "config.mk")
 
@@ -42,12 +36,7 @@ if __name__ == "__main__":
     run("mvn -q versions:update-property -Dproperty=spark.version "
         "-DnewVersion=[{}]".format(os.environ["SPARK_VERSION"]))
 
-    # Remove once https://github.com/dmlc/xgboost/pull/2370 is merged.
     if sys.platform in ["cygwin", "win32"]:
-        sed_inplace("pom.xml",
-                    "<failOnViolation>true",
-                    "<failOnViolation>false")
-
         with cd(".."):
             run("mingw32-make jvm")
 
