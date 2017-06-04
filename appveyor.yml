@@ -23,10 +23,14 @@ install:
   - 'SET PATH=C:\mingw-w64\x86_64-6.3.0-posix-seh-rt_v5-rev1\mingw64\bin;%PATH%'
   - 'SET PATH=%VS140COMNTOOLS%\..\IDE;%PATH%'
   - ps: If (!(Test-Path -Path $env:LIBHDFS_DIR)) { iex 'C:\Python36-x64\python.exe install_libhdfs.py' }
-  - 'C:\Python36-x64\python.exe install_xgboost.py'
 
 build_script:
-  - java -version
+  - 'C:\Python36-x64\python.exe install_xgboost.py'
+
+test_script:
+  - cd xgboost/jvm-packages
+  - 'SET HADOOP_HOME=%CD%'
+  - mvn -q package -pl :xgboost4j,:xgboost4j-spark
 
 cache:
   - '%LIBHDFS_DIR%'
