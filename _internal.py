@@ -62,6 +62,7 @@ def run(command, **kwargs):
 
 
 def maybe_makedirs(path):
+    print("mkdir -p " + path)
     try:
         os.makedirs(path)
     except OSError as e:

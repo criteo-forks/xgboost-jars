@@ -8,6 +8,17 @@ import sys
 from _internal import run, sed_inplace, maybe_makedirs, cd
 
 
+def library_names():
+    if sys.platform == "linux2":
+        name = "libxgboost4j.so"
+        return name, name
+    elif sys.platform == "darwin":
+        name = "libxgboost4j.dylib"
+        return name, name
+    else:
+        return "libxgboost4j.dll", "xgboost4j.dll"
+
+
 if __name__ == "__main__":
     os.chdir("xgboost")
     maybe_makedirs(os.path.join("lib", "native"))
@@ -52,14 +63,28 @@ if __name__ == "__main__":
                     "cbatch.offset = reinterpret_cast<jlong *>")
 
         with cd(".."):
+            # Remove once https://github.com/dmlc/xgboost/pull/2379 is merged.
+            sed_inplace("CMakeLists.txt",
+                        'set(CMAKE_SHARED_LIBRARY_PREFIX "")',
+                        "")
+            sed_inplace("CMakeLists.txt",
+                        "add_executable(xgboost",
+                        "add_executable(runxgboost")
+            sed_inplace("CMakeLists.txt",
+                        "target_link_libraries(xgboost",
+                        "target_link_libraries(runxgboost")
+            sed_inplace("CMakeLists.txt", "libxgboost", "xgboost")
+
             maybe_makedirs("build")
             with cd("build"):
-                run("cmake .. -DJVM_BINDINGS:BOOL=ON -DUSE_OPENMP:BOOL=ON")
+                run("cmake .. -DJVM_BINDINGS:BOOL=ON -DUSE_OPENMP:BOOL=ON "
+                    "-DUSE_HDFS:BOOL=ON -G\"Visual Studio 14 Win64\"")
                 run("cmake --build . --target ALL_BUILD")
 
         # Back to jvm-packages.
         resources_dir = os.path.join("xgboost4j", "src", "main", "resources")
         shutil.copytree(os.path.join("..", "lib"), resources_dir)
+        os.listdir(resources_dir)
 
         # Copy Python to native resources.
         shutil.copy(os.path.join("..", "dmlc-core", "tracker",
