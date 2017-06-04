@@ -20,6 +20,9 @@ env:
     - SPARK_VERSION=2.1.0
     - SCALA_VERSION=2.10.6
 
+before_install:
+  - git submodule foreach --recursive git pull origin master
+
 install:
   - if [ ! -z `find $LIBHDFS_DIR -prune -empty` ]; then python ./install_libhdfs.py; fi
   - python ./install_xgboost.py
