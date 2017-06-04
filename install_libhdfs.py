@@ -15,7 +15,7 @@ try:
 except ImportError:
     DEVNULL = open(os.devnull, "wb")
 
-from _internal import run, sed_inplace, maybe_makedirs, safe_path, cd
+from _internal import run, sed_inplace, maybe_makedirs, cd
 
 
 def install_dependencies():

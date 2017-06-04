@@ -33,12 +33,14 @@ if __name__ == "__main__":
     scala_version = os.environ["SCALA_VERSION"]
     [scala_binary_version] = re.findall(r"^(2\.1[012])\.\d+", scala_version)
     sed_inplace("pom.xml",
-                "<scala.binary.version>2.11",
-                "<scala.binary.version>" + scala_binary_version)
-    run("mvn -q versions:update-property -Dproperty=scala.version "
-        "-DnewVersion=[{}]".format(scala_version))
-    run("mvn -q versions:update-property -Dproperty=spark.version "
-        "-DnewVersion=[{}]".format(os.environ["SPARK_VERSION"]))
+                "<scala.binary.version>[^<]+",
+                "<scala.binary.version>" + scala_binary_version, regex=True)
+    sed_inplace("pom.xml",
+                "<scala.version>[^<]+",
+                "<scala.version>" + scala_version, regex=True)
+    sed_inplace("pom.xml",
+                "<spark.version>[^<]+",
+                "<spark.version>" + os.environ["SPARK_VERSION"], regex=True)
 
     if sys.platform in ["cygwin", "win32"]:
         # Remove once https://github.com/dmlc/xgboost/pull/2379 is merged.

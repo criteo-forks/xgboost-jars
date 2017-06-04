@@ -2,6 +2,7 @@ from __future__ import print_function, unicode_literals
 
 import errno
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -40,7 +41,7 @@ def cd(path):
         os.chdir(cwd)
 
 
-def sed_inplace(path, pattern, sub):
+def sed_inplace(path, pattern, sub, regex=False):
     """Replaces all occurences of ``pattern`` in a file with ``sub``.
 
     A file is modified **in-place**.
@@ -49,7 +50,8 @@ def sed_inplace(path, pattern, sub):
     with open(path, "r") as input:
         with tempfile.NamedTemporaryFile("w", delete=False) as output:
             for line in input:
-                output.write(line.replace(pattern, sub))
+                output.write(line.replace(pattern, sub) if not regex else
+                             re.sub(pattern, sub, line))
 
         shutil.copyfile(output.name, path)
 
