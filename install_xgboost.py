@@ -38,9 +38,13 @@ if __name__ == "__main__":
     # HACK: library name was changed in the latest version.
     sed_inplace("CMakeLists.txt", "dmlccore", "dmlc")
 
-    sed_inplace("CMakeLists.txt",
-                '"USE_HDFS": "OFF"',
-                '"USE_HDFS": "ON"')
+    sed_inplace("CMakeLists.txt", '"USE_HDFS": "OFF"', '"USE_HDFS": "ON"')
+
+    # HACK: patch FindHDFS to support Windows.
+    sed_inplace(
+        "dmlc-core/cmake/Modules/FindHDFS.cmake",
+        "libhdfs.a",
+        "${CMAKE_STATIC_LIBRARY_PREFIX}hdfs${CMAKE_STATIC_LIBRARY_SUFFIX}")
 
     os.chdir("jvm-packages")
     run("mvn -q -B versions:set -DnewVersion=" + os.environ["XGBOOST_VERSION"])
