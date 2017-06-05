@@ -39,6 +39,12 @@ if __name__ == "__main__":
         "libhdfs.a",
         "${CMAKE_STATIC_LIBRARY_PREFIX}hdfs${CMAKE_STATIC_LIBRARY_SUFFIX}")
 
+    # HACK: link with static libhdfs.
+    sed_inplace(
+        "dmlc-core/CMakeLists.txt",
+        "list(APPEND dmlccore_LINKER_LIBS ${HDFS_LIBRARIES}",
+        "list(APPEND dmlccore_LINKER_LIBS ${HDFS_STATIC_LIB}")
+
     os.chdir("jvm-packages")
     run("mvn -q -B versions:set -DnewVersion=" + os.environ["XGBOOST_VERSION"])
 
