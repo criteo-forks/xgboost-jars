@@ -102,12 +102,14 @@ if __name__ == "__main__":
 
         if sys.platform in ["cygwin", "win32"]:
             libhdfs_files = [
+                "target\\native\\target\\bin\\RelWithDebInfo\\hdfs.dll",
                 "target\\native\\target\\bin\\RelWithDebInfo\\hdfs.lib",
                 "src\\main\\native\\libhdfs\\hdfs.h"
             ]
         else:
             libhdfs_files = [
                 "target/native/target/usr/local/lib/libhdfs.a",
+                "target/native/target/usr/local/lib/libhdfs.so",
                 "src/main/native/libhdfs/hdfs.h"
             ]
 
