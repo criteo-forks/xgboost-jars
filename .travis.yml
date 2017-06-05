@@ -28,8 +28,10 @@ install:
   - python ./install_xgboost.py
 
 script:
-  - cd xgboost/jvm-packages
-  - HADOOP_HOME=. mvn -q package -pl :xgboost4j,:xgboost4j-spark
+  - cd xgboost
+  - export HADOOP_HOME=$PWD
+  - cd jvm-packages
+  - mvn -q package -pl :xgboost4j,:xgboost4j-spark
 
 cache:
   directories:

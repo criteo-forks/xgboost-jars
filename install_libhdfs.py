@@ -32,6 +32,27 @@ except ImportError:
 from _internal import run, sed_inplace, maybe_makedirs, cd
 
 
+RUNTIME_LIB_OVERRIDE = """\
+if(MSVC)
+    set(variables
+        CMAKE_C_FLAGS_DEBUG
+        CMAKE_C_FLAGS_MINSIZEREL
+        CMAKE_C_FLAGS_RELEASE
+        CMAKE_C_FLAGS_RELWITHDEBINFO
+        CMAKE_CXX_FLAGS_DEBUG
+        CMAKE_CXX_FLAGS_MINSIZEREL
+        CMAKE_CXX_FLAGS_RELEASE
+        CMAKE_CXX_FLAGS_RELWITHDEBINFO
+    )
+    foreach(variable ${variables})
+        if(${variable} MATCHES "/MD")
+            string(REGEX REPLACE "/MD" "/MT" ${variable} "${${variable}}")
+        endif()
+    endforeach()
+endif()
+"""
+
+
 def install_dependencies():
     if sys.platform == "darwin":
         run("brew install protobuf@2.5", stdout=open(os.devnull, "wb"))
@@ -71,19 +92,23 @@ def build():
                 "<module>hadoop-annotations</module>",
                 "")
 
-    if sys.platform == ["cygwin", "win32"]:
+    if sys.platform in ["cygwin", "win32"]:
         target = "native-win"
-
-        sed_inplace(
-            os.path.join("hadoop-hdfs-project", "hadoop-hdfs", "pom.xml"),
-            "Visual Studio 10",
-            "Visual Studio 14")
 
         for sln in [
             "hadoop-common-project\\hadoop-common\\src\\main\\native\\native.sln",
             "hadoop-common-project\\hadoop-common\\src\\main\\winutils\\winutils.sln"
         ]:
             run("devenv /upgrade " + sln)
+
+        sed_inplace(
+            "hadoop-hdfs-project\\hadoop-hdfs\\pom.xml",
+            "Visual Studio 10",
+            "Visual Studio 14")
+
+        hdfs_cmake_path = "hadoop-hdfs-project\\hadoop-hdfs\\src\\CMakeLists.txt"
+        with open(hdfs_cmake_path, "a") as cml:
+            cml.write(RUNTIME_LIB_OVERRIDE)
     else:
         target = "native"
 
@@ -120,13 +145,23 @@ if __name__ == "__main__":
                 "target\\native\\target\\bin\\RelWithDebInfo\\hdfs.lib",
                 "src\\main\\native\\libhdfs\\hdfs.h"
             ]
-        else:
+        elif sys.platform == "linux2":
             libhdfs_files = [
                 "target/native/target/usr/local/lib/libhdfs.a",
                 "target/native/target/usr/local/lib/libhdfs.so",
                 "src/main/native/libhdfs/hdfs.h"
             ]
+        else:
+            libhdfs_files = [
+                "target/native/target/usr/local/lib/libhdfs.a",
+                "target/native/target/usr/local/lib/libhdfs.dylib",
+                "src/main/native/libhdfs/hdfs.h"
+            ]
 
         with cd(os.path.join("hadoop-hdfs-project", "hadoop-hdfs")):
+            if sys.platform == "win32":
+                print(os.listdir(
+                    "target\\native\\target\\bin\\RelWithDebInfo\\"))
+
             for file in libhdfs_files:
                 shutil.copy(file, libhdfs_dir)

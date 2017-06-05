@@ -28,9 +28,10 @@ build_script:
   - 'C:\Python36-x64\python.exe install_xgboost.py'
 
 test_script:
-  - cd xgboost/jvm-packages
+  - cd xgboost
   - 'SET HADOOP_HOME=%CD%'
+  - cd jvm-packages
   - mvn -q package -pl :xgboost4j,:xgboost4j-spark
 
-cache:
-  - '%LIBHDFS_DIR%'
+# cache:
+#   - '%LIBHDFS_DIR%'

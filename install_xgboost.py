@@ -55,6 +55,12 @@ if __name__ == "__main__":
         "list(APPEND dmlccore_LINKER_LIBS ${HDFS_LIBRARIES}",
         "list(APPEND dmlccore_LINKER_LIBS ${HDFS_STATIC_LIB}")
 
+    # HACK: add missing header.
+    sed_inplace(
+        "dmlc-core/src/io/hdfs_filesys.cc",
+        "// Copyright by Contributors",
+        "#include <algorithm>")
+
     os.chdir("jvm-packages")
     run("mvn -q -B versions:set -DnewVersion=" + os.environ["XGBOOST_VERSION"])
 
@@ -71,6 +77,11 @@ if __name__ == "__main__":
     sed_inplace("pom.xml",
                 "<spark.version>[^<]+",
                 "<spark.version>" + os.environ["SPARK_VERSION"], regex=True)
+
+    # HACK: build release.
+    sed_inplace("create_jni.py",
+                "cmake ..",
+                "cmake .. -DCMAKE_BUILD_TYPE=Release ")
 
     sed_inplace("create_jni.py", '"USE_HDFS": "OFF"', '"USE_HDFS": "ON"')
 
