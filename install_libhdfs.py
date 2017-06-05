@@ -1,3 +1,17 @@
+"""
+Downloads and builds libhdfs for a given CDH Hadoop version.
+
+Environment variables:
+* HADOOP_VERSION
+* LIBHDFS_DIR
+
+Assumptions:
+* Java 8 is installed and available in $PATH.
+* (Linux) ProtoBuf 2.5.0 is installed and available in $PATH.
+* (OS X) The user has passwordless sudo.
+* (Windows) Visual Studio 14 is available.
+"""
+
 from __future__ import print_function, unicode_literals
 
 import os
@@ -57,7 +71,7 @@ def build():
                 "<module>hadoop-annotations</module>",
                 "")
 
-    if sys.platform in ["cygwin", "win32"]:
+    if sys.platform == ["cygwin", "win32"]:
         target = "native-win"
 
         sed_inplace(

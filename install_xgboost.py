@@ -1,3 +1,13 @@
+"""
+Builds the JVM bindings for the latest xgboost.
+
+Environment variables:
+* XGBOOST_VERSION
+* SCALA_VERSION
+* SPARK_VERSION
+* LIBHDFS_DIR containing libhdfs.{so,a} and hdfs.h
+"""
+
 from __future__ import print_function, unicode_literals
 
 import os
