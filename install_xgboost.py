@@ -26,8 +26,6 @@ if __name__ == "__main__":
     # HACK: library name was changed in the latest version.
     sed_inplace("CMakeLists.txt", "dmlccore", "dmlc")
 
-    sed_inplace("CMakeLists.txt", '"USE_HDFS": "OFF"', '"USE_HDFS": "ON"')
-
     # HACK: patch FindHDFS to support Windows.
     sed_inplace(
         "dmlc-core/cmake/Modules/FindHDFS.cmake",
@@ -51,6 +49,8 @@ if __name__ == "__main__":
                 "<spark.version>[^<]+",
                 "<spark.version>" + os.environ["SPARK_VERSION"], regex=True)
 
+    sed_inplace("create_jni.py", '"USE_HDFS": "OFF"', '"USE_HDFS": "ON"')
+
     run("mvn -q install -pl :xgboost4j,:xgboost4j-spark "
         "-DskipTests -Dmaven.test.skip",
-        env=dict(os.environ, HADOOP_HOME="."))
+        env=dict(os.environ, HADOOP_HOME=".."))
