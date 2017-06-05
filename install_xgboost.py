@@ -9,19 +9,26 @@ from _internal import run, sed_inplace, maybe_makedirs
 
 if __name__ == "__main__":
     os.chdir("xgboost")
+    xgboost_dir = os.getcwd()
     maybe_makedirs(os.path.join("lib", "native"))
     maybe_makedirs(os.path.join("lib", "include"))
-    libhdfs_shared = \
-        "hdfs.dll" if sys.platform in ["cygwin", "win32"] else "libhdfs.so"
-    libhdfs_static = \
-        "hdfs.lib" if sys.platform in ["cygwin", "win32"] else "libhdfs.a"
+
+    libhdfs_shared = {
+        "win32": "hdfs.dll",
+        "linux2": "libhdfs.so",
+        "darwin": "libhdfs.dylib"
+    }[sys.platform]
+    libhdfs_static = {
+        "win32": "hdfs.lib",
+        "linux2": "libhdfs.a",
+        "darwin": "libhdfs.a"
+    }[sys.platform]
 
     shutil.copy(os.path.join(os.environ["LIBHDFS_DIR"], libhdfs_static),
                 os.path.join("lib", "native"))
     shutil.copy(os.path.join(os.environ["LIBHDFS_DIR"], libhdfs_shared),
                 os.path.join("lib", "native"))
-    shutil.copy(os.path.join(os.environ["LIBHDFS_DIR"], "hdfs.h"),
-                os.path.join("lib", "include"))
+    shutil.copy(os.path.join(os.environ["LIBHDFS_DIR"], "hdfs.h"), "include")
 
     # HACK: library name was changed in the latest version.
     sed_inplace("CMakeLists.txt", "dmlccore", "dmlc")
@@ -53,4 +60,4 @@ if __name__ == "__main__":
 
     run("mvn -q install -pl :xgboost4j,:xgboost4j-spark "
         "-DskipTests -Dmaven.test.skip",
-        env=dict(os.environ, HADOOP_HOME=".."))
+        env=dict(os.environ, HADOOP_HOME=xgboost_dir))
