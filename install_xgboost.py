@@ -1,22 +1,10 @@
 from __future__ import print_function, unicode_literals
 
-import glob
 import os
 import re
 import shutil
 import sys
-from _internal import run, sed_inplace, maybe_makedirs, cd
-
-
-def library_names():
-    if sys.platform == "linux2":
-        name = "libxgboost4j.so"
-        return name, name
-    elif sys.platform == "darwin":
-        name = "libxgboost4j.dylib"
-        return name, name
-    else:
-        return "libxgboost4j.dll", "xgboost4j.dll"
+from _internal import run, sed_inplace, maybe_makedirs
 
 
 if __name__ == "__main__":
