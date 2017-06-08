@@ -14,7 +14,7 @@ matrix:
 
 env:
   global:
-    - XGBOOST_VERSION=42
+    - XGBOOST_VERSION=0.7-criteo-20170608163439-$TRAVIS_OS_NAME
     - LIBHDFS_DIR=$HOME/libhdfs-dev
     - HADOOP_VERSION=2.6.0-cdh5.5.0
     - SPARK_VERSION=2.1.0
@@ -32,17 +32,23 @@ script:
   - export HADOOP_HOME=$PWD
   - cd jvm-packages
   - mvn -q package -pl :xgboost4j,:xgboost4j-spark
+  - cd $TRAVIS_BUILD_DIR
 
 cache:
   directories:
     - $LIBHDFS_DIR
+
+before_deploy:
+  - ls xgboost/jvm-packages/xgboost4j-spark/target/
 
 deploy:
   provider: releases
   api_key:
     secure: tCV+MeGvnSGoVYuf7QLnRUMHPNUdu6H0lsYNjY6r1e05SsmaUZNiZJKoRdw+wv/aIZI3sqJIfd3TviVZoGwcRQnTxsKgA3r+sQWt2mu3ABojynkgyyclIrIHyUhjUtyXAaRDx07GDgMflLDQ3cQEE8f8/7gLQftXdehdM64hGEuw7YSgPOh3sq/N8H48pIlPffSJb4zVGrpFhpLsfOPurXyeifhHvcPq7kvcAVxJA7BsnvN1rh9ORZe7LBtfNb0m20rGEc+t5t4SKPHlRjuVAc7RGjEzRwJuNLYB6o8kNJgHAu+E6VjryheuwfVwOQ0ez7QpkdpClwfGFutuOELOTCqEvh6QTlwc0Dz5acfQ+DZqhP/DFUKDTntXuk7wrIPBMDgR9MOduXGYojfQeQJzp2E/vuZ1aSq21+qHy0HXLQTs3fYTw9gmg/oz6o/EwFKy9qdcgH3Dl6Ay/XWw4JooL3t7hasOFjc8EObP2+39pOcl+TiLpEzGgSzPNqfHb+PpE2jrfip5tc1wcR3EHYCHmdrAZBhL6oUeAEZ5pwulcBBBHrbApN8FoFtopcIAht3hdbbK0NhbNzL2ZxyAbsmZHQqV9BnoVrfOSrnK0uFuht2Q4xj0j9q3ianCrHOOEnYwo+6993OEEMLtRPxIN09mZuK43kuKIUGc0Qmv9hQxMr4=
   file:
-    - $TRAVIS_BUILD_DIR/xgboost/jvm-packages/xgboost4j-spark/target/xgboost4j-spark-${XGBOOST_VERSION}.jar
-    - $TRAVIS_BUILD_DIR/xgboost/jvm-packages/xgboost4j/target/xgboost4j-${XGBOOST_VERSION}.jar
+    - xgboost/jvm-packages/xgboost4j/target/xgboost4j-${XGBOOST_VERSION}.jar
+    - xgboost/jvm-packages/xgboost4j-spark/target/xgboost4j-spark-${XGBOOST_VERSION}.jar
+  skip_cleanup: true
+  overwrite: true
   on:
-    tags: true
+    branch: master
