@@ -3,8 +3,7 @@ image: Visual Studio 2015
 
 environment:
   global:
-    XGBOOST_BASE_VERSION: 0.7-criteo-20170608163439
-    XGBOOST_VERSION: '%XGBOOST_BASE_VERSION%-win64'
+    XGBOOST_VERSION: 0.7-criteo-20170608163439
     LIBHDFS_DIR: '%APPVEYOR_BUILD_FOLDER%\libhdfs-dev'
     HADOOP_VERSION: 2.6.0-cdh5.5.0
     SPARK_VERSION: 2.1.0
@@ -36,13 +35,17 @@ test_script:
   # 'kryoSerializer test' in xgboost4j-spark seems to fail on Windows.
   # The issue has been reported upstream, see dmlc/xgboost#2394.
   - mvn -q package -pl :xgboost4j-spark -am -DskipTests -Dmaven.test.skip
+  - 'copy xgboost4j\target\xgboost4j-%XGBOOST_VERSION%.jar
+         %APPVEYOR_BUILD_FOLDER%\xgboost4j-%XGBOOST_VERSION%-win64.jar'
+  - 'copy xgboost4j-spark\target\xgboost4j-spark-%XGBOOST_VERSION%.jar
+         %APPVEYOR_BUILD_FOLDER%\xgboost4j-spark-%XGBOOST_VERSION%-win64.jar'
 
 cache:
   - '%LIBHDFS_DIR%'
 
 artifacts:
-  - path: 'xgboost\jvm-packages\xgboost4j-spark\target\xgboost4j-spark-%XGBOOST_VERSION%.jar'
-  - path: 'xgboost\jvm-packages\xgboost4j\target\xgboost4j-%XGBOOST_VERSION%.jar'
+  - path: 'xgboost4j-spark-%XGBOOST_VERSION%-win64.jar'
+  - path: 'xgboost4j-%XGBOOST_VERSION%-win64.jar'
 
 deploy:
   provider: GitHub
