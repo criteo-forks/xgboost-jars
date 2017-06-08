@@ -34,11 +34,16 @@ if __name__ == "__main__":
         "darwin": "libhdfs.a"
     }[sys.platform]
 
-    shutil.copy(os.path.join(os.environ["LIBHDFS_DIR"], libhdfs_static),
+    libhdfs_dir = os.environ["LIBHDFS_DIR"]
+    shutil.copy(os.path.join(libhdfs_dir, libhdfs_static),
                 os.path.join("lib", "native"))
-    shutil.copy(os.path.join(os.environ["LIBHDFS_DIR"], libhdfs_shared),
+    shutil.copy(os.path.join(libhdfs_dir, libhdfs_shared),
                 os.path.join("lib", "native"))
-    shutil.copy(os.path.join(os.environ["LIBHDFS_DIR"], "hdfs.h"), "include")
+    shutil.copy(os.path.join(libhdfs_dir, "hdfs.h"), "include")
+
+    if sys.platform == "win32":
+        maybe_makedirs("bin")
+        shutil.copy(os.path.join(libhdfs_dir, "winutils.exe"), "bin")
 
     # HACK: library name was changed in the latest version.
     sed_inplace("CMakeLists.txt", "dmlccore", "dmlc")

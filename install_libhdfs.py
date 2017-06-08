@@ -159,9 +159,10 @@ if __name__ == "__main__":
             ]
 
         with cd(os.path.join("hadoop-hdfs-project", "hadoop-hdfs")):
-            if sys.platform == "win32":
-                print(os.listdir(
-                    "target\\native\\target\\bin\\RelWithDebInfo\\"))
-
             for file in libhdfs_files:
                 shutil.copy(file, libhdfs_dir)
+
+        if sys.platform == "win32":
+            with cd(os.path.join("hadoop-common-project", "hadoop-common")):
+                shutil.copy(os.path.join("target", "bin", "winutils.exe"),
+                            libhdfs_dir)
