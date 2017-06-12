@@ -3,12 +3,19 @@ language: java
 matrix:
   include:
     - os: linux
-      dist: trusty
+      dist: precise
       sudo: false
       addons:
         apt:
+          sources:
+            - george-edison55-precise-backports
+            - ubuntu-toolchain-r-test
           packages:
-            - protobuf-compiler
+            - cmake
+            - cmake-data
+            - gcc-6
+            - g++-6
+      env: CC=gcc-6 CXX=g++-6
     - os: osx
       osx_image: xcode8
 

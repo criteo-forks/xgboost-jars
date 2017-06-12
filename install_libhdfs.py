@@ -15,6 +15,7 @@ Assumptions:
 from __future__ import print_function, unicode_literals
 
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -53,8 +54,28 @@ endif()
 """
 
 
+def detect_java_version():
+    output = subprocess.check_output(
+        "java -version", stderr=subprocess.STDOUT, shell=True).decode()
+    [java_version] = re.findall(r"build (1.\d).0", output)
+    return java_version
+
+
 def install_dependencies():
-    if sys.platform == "darwin":
+    if sys.platform == "linux2":
+        protobuf_archive, _headers = urlretrieve(
+            "https://github.com/google/protobuf/releases/download/"
+            "v2.5.0/protobuf-2.5.0.zip")
+        with zipfile.ZipFile(protobuf_archive, "r") as zf:
+            zf.extractall()
+
+        with cd("protobuf-2.5.0"):
+            run("sh configure")
+            run("make")
+
+            os.environ["HADOOP_PROTOC_CDH5_PATH"] = \
+                os.path.join(os.getcwd(), "src", "protoc")
+    elif sys.platform == "darwin":
         run("brew install protobuf@2.5", stdout=open(os.devnull, "wb"))
         os.environ["HADOOP_PROTOC_CDH5_PATH"] = \
             "/usr/local/opt/protobuf@2.5/bin/protoc"
@@ -81,9 +102,10 @@ def install_dependencies():
 
 def build():
     # Make maven-enforcer-plugin happy.
-    # TODO: autodetect Java version?
-    sed_inplace("pom.xml", "<javaVersion>1.7", "<javaVersion>1.8")
-    sed_inplace("pom.xml", "<targetJavaVersion>1.7", "<targetJavaVersion>1.8")
+    java_version = detect_java_version()
+    sed_inplace("pom.xml", "<javaVersion>1.7", "<javaVersion>" + java_version)
+    sed_inplace("pom.xml", "<targetJavaVersion>1.7",
+                "<targetJavaVersion>" + java_version)
 
     # Disable hadoop-annotations and pull them from Maven Central. This
     # module seems to require tools.jar, but even if it is in the right
