@@ -3,18 +3,25 @@ language: java
 matrix:
   include:
     - os: linux
-      dist: trusty
+      dist: precise
       sudo: false
       addons:
         apt:
+          sources:
+            - george-edison55-precise-backports
+            - ubuntu-toolchain-r-test
           packages:
-            - protobuf-compiler
+            - cmake
+            - cmake-data
+            - gcc-6
+            - g++-6
+      env: CC=gcc-6 CXX=g++-6
     - os: osx
       osx_image: xcode8
 
 env:
   global:
-    - XGBOOST_VERSION=0.7-criteo-20170608163439
+    - XGBOOST_VERSION=0.7-criteo-20170612160820
     - LIBHDFS_DIR=$HOME/libhdfs-dev
     - HADOOP_VERSION=2.6.0-cdh5.5.0
     - SPARK_VERSION=2.1.0

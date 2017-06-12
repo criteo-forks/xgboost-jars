@@ -58,7 +58,7 @@ def sed_inplace(path, pattern, sub, regex=False):
 
 def run(command, **kwargs):
     print(command)
-    subprocess.check_call(command, shell=True, **kwargs)
+    return subprocess.check_call(command, shell=True, **kwargs)
 
 
 def maybe_makedirs(path):
