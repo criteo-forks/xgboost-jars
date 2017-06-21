@@ -28,15 +28,15 @@ install:
 script:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then sh travis/test_and_package.sh; fi
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
-        docker run \
-            -e XGBOOST_VERSION=$XGBOOST_VERSION \
-            -e LIBHDFS_DIR=$LIBHDFS_DIR \
-            -e HADOOP_VERSION=$HADOOP_VERSION \
-            -e HADOOP_HOME=$HADOOP_HOME \
-            -e SCALA_VERSION=$SCALA_VERSION \
-            -e SPARK_VERSION=$SPARK_VERSION \
-            -v `pwd`:/xgboost-jars:rw \
-            centos:centos6 \
+        docker run
+            -e XGBOOST_VERSION
+            -e LIBHDFS_DIR
+            -e HADOOP_VERSION
+            -e HADOOP_HOME
+            -e SCALA_VERSION
+            -e SPARK_VERSION
+            -v `pwd`:/xgboost-jars:rw
+            centos:centos6
             /bin/bash -c "bash -xe /xgboost-jars/travis/docker.sh";
     fi
 
