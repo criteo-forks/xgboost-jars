@@ -15,7 +15,6 @@ env:
     - XGBOOST_VERSION=0.7-criteo-20170619115435
     - LIBHDFS_DIR=$HOME/libhdfs-dev
     - HADOOP_VERSION=2.6.0-cdh5.5.0
-    - HADOOP_HOME=$TRAVIS_BUILD_DIR/xgboost
     - SCALA_VERSION=2.10.6
     - SPARK_VERSION=2.1.0
 
@@ -32,7 +31,6 @@ script:
             -e XGBOOST_VERSION
             -e LIBHDFS_DIR
             -e HADOOP_VERSION
-            -e HADOOP_HOME
             -e SCALA_VERSION
             -e SPARK_VERSION
             -v `pwd`:/xgboost-jars:rw

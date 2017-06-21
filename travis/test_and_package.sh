@@ -1,5 +1,7 @@
 set -xe
 
+export HADOOP_HOME=$PWD/xgboost
+
 cd xgboost/jvm-packages
 mvn -q package -pl :xgboost4j,:xgboost4j-spark
 
