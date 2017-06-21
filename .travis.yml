@@ -4,6 +4,7 @@ matrix:
   include:
     - os: linux
       sudo: required
+      group: edge
       services:
         - docker
     - os: osx
@@ -36,7 +37,7 @@ script:
             -e SPARK_VERSION=$SPARK_VERSION \
             -v `pwd`:/xgboost-jars:rw \
             centos:centos6 \
-            /bin/bash -c "bash -xe /xgboost-jars/travis/docker.sh"
+            /bin/bash -c "bash -xe /xgboost-jars/travis/docker.sh";
     fi
 
 cache:
