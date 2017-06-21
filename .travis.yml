@@ -3,19 +3,9 @@ language: java
 matrix:
   include:
     - os: linux
-      dist: precise
-      sudo: false
-      addons:
-        apt:
-          sources:
-            - george-edison55-precise-backports
-            - ubuntu-toolchain-r-test
-          packages:
-            - cmake
-            - cmake-data
-            - gcc-6
-            - g++-6
-      env: CC=gcc-6 CXX=g++-6
+      sudo: required
+      services:
+        - docker
     - os: osx
       osx_image: xcode8
 
@@ -24,24 +14,30 @@ env:
     - XGBOOST_VERSION=0.7-criteo-20170619115435
     - LIBHDFS_DIR=$HOME/libhdfs-dev
     - HADOOP_VERSION=2.6.0-cdh5.5.0
-    - SPARK_VERSION=2.1.0
+    - HADOOP_HOME=$TRAVIS_BUILD_DIR/xgboost
     - SCALA_VERSION=2.10.6
+    - SPARK_VERSION=2.1.0
 
 before_install:
   - git submodule foreach --recursive git pull origin master
 
 install:
-  - if [ ! -z `find $LIBHDFS_DIR -prune -empty` ]; then python ./install_libhdfs.py; fi
-  - python ./install_xgboost.py
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then sh travis/install.sh; fi
 
 script:
-  - cd xgboost
-  - export HADOOP_HOME=$PWD
-  - cd jvm-packages
-  - mvn -q package -pl :xgboost4j,:xgboost4j-spark
-  - mv xgboost4j/target/xgboost4j-$XGBOOST_VERSION.jar $TRAVIS_BUILD_DIR/xgboost4j-$XGBOOST_VERSION-$TRAVIS_OS_NAME.jar
-  - mv xgboost4j-spark/target/xgboost4j-spark-$XGBOOST_VERSION.jar $TRAVIS_BUILD_DIR/xgboost4j-spark-$XGBOOST_VERSION-$TRAVIS_OS_NAME.jar
-  - cd $TRAVIS_BUILD_DIR
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then sh travis/test_and_package.sh; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
+        docker run \
+            -e XGBOOST_VERSION=$XGBOOST_VERSION \
+            -e LIBHDFS_DIR=$LIBHDFS_DIR \
+            -e HADOOP_VERSION=$HADOOP_VERSION \
+            -e HADOOP_HOME=$HADOOP_HOME \
+            -e SCALA_VERSION=$SCALA_VERSION \
+            -e SPARK_VERSION=$SPARK_VERSION \
+            -v `pwd`:/xgboost-jars:rw \
+            centos:centos6 \
+            /bin/bash -c "bash -xe /xgboost-jars/travis/docker.sh"
+    fi
 
 cache:
   directories:
