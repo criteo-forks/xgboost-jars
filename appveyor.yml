@@ -36,12 +36,12 @@ test_script:
   - mvn -q package -pl :xgboost4j-spark -am -DskipTests -Dmaven.test.skip
   - 'copy xgboost4j\target\xgboost4j-%XGBOOST_VERSION%.jar
          %APPVEYOR_BUILD_FOLDER%\xgboost4j-%XGBOOST_VERSION%-win64.jar'
-  - 'copy xgboost4j\target\xgboost4j-sources-%XGBOOST_VERSION%.jar
-         %APPVEYOR_BUILD_FOLDER%\xgboost4j-sources-%XGBOOST_VERSION%.jar'
+  - 'copy xgboost4j\target\xgboost4j-%XGBOOST_VERSION%-sources.jar
+         %APPVEYOR_BUILD_FOLDER%\xgboost4j-%XGBOOST_VERSION%-sources.jar'
   - 'copy xgboost4j-spark\target\xgboost4j-spark-%XGBOOST_VERSION%.jar
          %APPVEYOR_BUILD_FOLDER%\xgboost4j-spark-%XGBOOST_VERSION%.jar'
-  - 'copy xgboost4j-spark\target\xgboost4j-spark-sources-%XGBOOST_VERSION%.jar
-         %APPVEYOR_BUILD_FOLDER%\xgboost4j-spark-sources-%XGBOOST_VERSION%.jar'
+  - 'copy xgboost4j-spark\target\xgboost4j-spark-%XGBOOST_VERSION%-sources.jar
+         %APPVEYOR_BUILD_FOLDER%\xgboost4j-spark-%XGBOOST_VERSION%-sources.jar'
   - 'copy pom.xml %APPVEYOR_BUILD_FOLDER%\xgboost-jvm-%XGBOOST_VERSION%.pom'
 
 cache:
@@ -50,7 +50,9 @@ cache:
 artifacts:
   - path: 'xgboost-jvm-%XGBOOST_VERSION%.pom'
   - path: 'xgboost4j-%XGBOOST_VERSION%-win64.jar'
+  - path: 'xgboost4j-%XGBOOST_VERSION%-sources.jar'
   - path: 'xgboost4j-spark-%XGBOOST_VERSION%.jar'
+  - path: 'xgboost4j-spark-%XGBOOST_VERSION%-sources.jar'
 
 deploy:
   provider: GitHub
