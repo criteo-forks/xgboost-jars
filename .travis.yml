@@ -33,6 +33,7 @@ script:
             -e HADOOP_VERSION
             -e SCALA_VERSION
             -e SPARK_VERSION
+            -e TRAVIS_OS_NAME
             -v `pwd`:/xgboost-jars:rw
             centos:centos6
             /bin/bash -c "bash -xe /xgboost-jars/travis/docker.sh";
@@ -48,7 +49,7 @@ deploy:
     secure: tCV+MeGvnSGoVYuf7QLnRUMHPNUdu6H0lsYNjY6r1e05SsmaUZNiZJKoRdw+wv/aIZI3sqJIfd3TviVZoGwcRQnTxsKgA3r+sQWt2mu3ABojynkgyyclIrIHyUhjUtyXAaRDx07GDgMflLDQ3cQEE8f8/7gLQftXdehdM64hGEuw7YSgPOh3sq/N8H48pIlPffSJb4zVGrpFhpLsfOPurXyeifhHvcPq7kvcAVxJA7BsnvN1rh9ORZe7LBtfNb0m20rGEc+t5t4SKPHlRjuVAc7RGjEzRwJuNLYB6o8kNJgHAu+E6VjryheuwfVwOQ0ez7QpkdpClwfGFutuOELOTCqEvh6QTlwc0Dz5acfQ+DZqhP/DFUKDTntXuk7wrIPBMDgR9MOduXGYojfQeQJzp2E/vuZ1aSq21+qHy0HXLQTs3fYTw9gmg/oz6o/EwFKy9qdcgH3Dl6Ay/XWw4JooL3t7hasOFjc8EObP2+39pOcl+TiLpEzGgSzPNqfHb+PpE2jrfip5tc1wcR3EHYCHmdrAZBhL6oUeAEZ5pwulcBBBHrbApN8FoFtopcIAht3hdbbK0NhbNzL2ZxyAbsmZHQqV9BnoVrfOSrnK0uFuht2Q4xj0j9q3ianCrHOOEnYwo+6993OEEMLtRPxIN09mZuK43kuKIUGc0Qmv9hQxMr4=
   file:
     - xgboost4j-$XGBOOST_VERSION-$TRAVIS_OS_NAME.jar
-    - xgboost4j-spark-$XGBOOST_VERSION-$TRAVIS_OS_NAME.jar
+    - xgboost4j-spark-$XGBOOST_VERSION.jar
   skip_cleanup: true
   overwrite: true
   on:

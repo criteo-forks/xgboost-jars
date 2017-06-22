@@ -44,9 +44,9 @@ cache:
   - '%LIBHDFS_DIR%'
 
 artifacts:
-  - path: 'xgboost4j-spark-%XGBOOST_VERSION%-win64.jar'
-  - path: 'xgboost4j-%XGBOOST_VERSION%-win64.jar'
   - path: 'xgboost-jvm-%XGBOOST_VERSION%.pom'
+  - path: 'xgboost4j-%XGBOOST_VERSION%-win64.jar'
+  - path: 'xgboost4j-spark-%XGBOOST_VERSION%.jar'
 
 deploy:
   provider: GitHub
