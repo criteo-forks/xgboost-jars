@@ -11,7 +11,7 @@ Build
 
 The build would always use the *latest* version of xgboost and its submodules.
 Sadly, there is no way around it at the moment, as the submodules are pinned
-to specific commits and `dmlc-core` received quite a few patches to be buildable
+to specific commits, and `dmlc-core` received quite a few patches to be buildable
 on both CIs. In the future, this behaviour could be safely removed.
 
 Otherwise, the following versions of the dependencies are used
@@ -25,7 +25,11 @@ SCALA_VERSION=2.10.6
 You could probably change them to more recent/different version, but this has
 not been validated yet.
 
-### Linux
+#### Windows
+
+The Windows build is x64 only and uses Visual Studio 2015.
+
+#### Linux
 
 The Linux build is done inside a CentOS6 Docker container to make sure the
 resulting JARs can be executed on ancient Linux distributions like CentOS.
@@ -36,8 +40,5 @@ Release
 To make a release:
 
 - Bump `XGBOOST_VERSION` in `.travis.yml` and `appveyor.yml`.
-- Merge `master` into `release`.
+- Tag `master` with `XGBOOST_VERSION`.
 - Wait :)
-
-Note that the deployment process is not polished. Specifically, I think it
-could break if Travis publishes the artifacts ahead of Appveyor.
