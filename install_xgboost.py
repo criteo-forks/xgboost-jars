@@ -25,12 +25,12 @@ if __name__ == "__main__":
 
     libhdfs_shared = {
         "win32": "hdfs.dll",
-        "linux2": "libhdfs.so",
+        "linux": "libhdfs.so",
         "darwin": "libhdfs.dylib"
     }[sys.platform]
     libhdfs_static = {
         "win32": "hdfs.lib",
-        "linux2": "libhdfs.a",
+        "linux": "libhdfs.a",
         "darwin": "libhdfs.a"
     }[sys.platform]
 

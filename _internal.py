@@ -11,6 +11,10 @@ import tempfile
 from contextlib import contextmanager
 
 
+if sys.platform.startswith("linux"):
+    sys.platform = "linux"
+
+
 # From https://stackoverflow.com/a/19445241/262432
 if sys.platform in ["cygwin", "win32"]:
     _bltn_open = tarfile.bltn_open

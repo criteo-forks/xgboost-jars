@@ -62,7 +62,7 @@ def detect_java_version():
 
 
 def install_dependencies():
-    if sys.platform == "linux2":
+    if sys.platform == "linux":
         protobuf_archive, _headers = urlretrieve(
             "https://github.com/google/protobuf/releases/download/"
             "v2.5.0/protobuf-2.5.0.zip")
@@ -167,7 +167,7 @@ if __name__ == "__main__":
                 "target\\native\\target\\bin\\RelWithDebInfo\\hdfs.lib",
                 "src\\main\\native\\libhdfs\\hdfs.h"
             ]
-        elif sys.platform == "linux2":
+        elif sys.platform == "linux":
             libhdfs_files = [
                 "target/native/target/usr/local/lib/libhdfs.a",
                 "target/native/target/usr/local/lib/libhdfs.so",
