@@ -3,7 +3,7 @@ image: Visual Studio 2015
 
 environment:
   global:
-    XGBOOST_VERSION: 0.7-criteo-20170619115435
+    XGBOOST_VERSION: 0.7-criteo-20170622092016
     LIBHDFS_DIR: '%APPVEYOR_BUILD_FOLDER%\libhdfs-dev'
     HADOOP_VERSION: 2.6.0-cdh5.5.0
     SPARK_VERSION: 2.1.0
