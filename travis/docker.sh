@@ -40,4 +40,4 @@ cmake .. -DCMAKE_C_COMPILER=$CC -DCMAKE_CXX_COMPILER=$CXX
 popd
 
 sh travis/install.sh
-sh travis/test_and_package.sh
+TRAVIS_BUILD_DIR=$PWD sh travis/test_and_package.sh

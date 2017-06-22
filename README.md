@@ -25,6 +25,11 @@ SCALA_VERSION=2.10.6
 You could probably change them to more recent/different version, but this has
 not been validated yet.
 
+### Linux
+
+The Linux build is done inside a CentOS6 Docker container to make sure the
+resulting JARs can be executed on ancient Linux distributions like CentOS.
+
 Release
 -------
 
