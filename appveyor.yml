@@ -37,7 +37,7 @@ test_script:
   - 'copy xgboost4j\target\xgboost4j-%XGBOOST_VERSION%.jar
          %APPVEYOR_BUILD_FOLDER%\xgboost4j-%XGBOOST_VERSION%-win64.jar'
   - 'copy xgboost4j-spark\target\xgboost4j-spark-%XGBOOST_VERSION%.jar
-         %APPVEYOR_BUILD_FOLDER%\xgboost4j-spark-%XGBOOST_VERSION%-win64.jar'
+         %APPVEYOR_BUILD_FOLDER%\xgboost4j-spark-%XGBOOST_VERSION%.jar'
   - 'copy pom.xml %APPVEYOR_BUILD_FOLDER%\xgboost-jvm-%XGBOOST_VERSION%.pom'
 
 cache:
