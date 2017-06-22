@@ -60,4 +60,4 @@ deploy:
   auth_token:
     secure: 'GAsVDc+Y0V9vOCuF+W9l7RVr2r1IoOgRfuRm6Jgd3fjIgylg2C4wudvzI25D4XYD'
   on:
-    branch: release
+    appveyor_repo_tag: true
