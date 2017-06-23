@@ -7,7 +7,6 @@ Environment variables:
 
 Assumptions:
 * Java 8 is installed and available in $PATH.
-* (Linux) ProtoBuf 2.5.0 is installed and available in $PATH.
 * (OS X) The user has passwordless sudo.
 * (Windows) Visual Studio 14 is available.
 """
