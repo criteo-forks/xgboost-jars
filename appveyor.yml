@@ -28,7 +28,7 @@ build_script:
 
 test_script:
   - cd xgboost
-  - 'SET HADOOP_HOME=%CD%'
+  - 'SET HADOOP_HDFS_HOME=%CD%'
   - cd jvm-packages
   - mvn -q package -pl :xgboost4j
   # 'kryoSerializer test' in xgboost4j-spark seems to fail on Windows.
