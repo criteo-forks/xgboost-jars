@@ -84,8 +84,8 @@ def install_dependencies():
         java_home = os.environ["JAVA_HOME"] = subprocess.check_output(
             "/usr/libexec/java_home").strip().decode()
         # Not pure Python because we need sudo.
-        run("sudo mkdir " + os.path.join(java_home, "Classes"))
-        run("sudo ln -s {} {}".format(
+        run("sudo mkdir -p " + os.path.join(java_home, "Classes"))
+        run("sudo ln -nsf {} {}".format(
             os.path.join(java_home, "lib", "tools.jar"),
             os.path.join(java_home, "Classes", "classes.jar")))
     elif sys.platform in ["cygwin", "win32"]:
