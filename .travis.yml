@@ -12,7 +12,7 @@ matrix:
 
 env:
   global:
-    - XGBOOST_VERSION=0.7-criteo-20170710120621
+    - XGBOOST_VERSION=0.7-criteo-20170821101514
     - LIBHDFS_DIR=$HOME/libhdfs-dev
     - HADOOP_VERSION=2.6.0-cdh5.5.0
     - SCALA_VERSION=2.10.6
