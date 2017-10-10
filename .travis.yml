@@ -12,7 +12,7 @@ matrix:
 
 env:
   global:
-    - XGBOOST_VERSION=0.7-criteo-20170821101514
+    - XGBOOST_VERSION=0.7-criteo-20171010131411
     - LIBHDFS_DIR=$HOME/libhdfs-dev
     - HADOOP_VERSION=2.6.0-cdh5.5.0
     - SCALA_VERSION=2.10.6
@@ -20,9 +20,11 @@ env:
 
 before_install:
   - git submodule foreach --recursive git pull origin master
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update; fi
 
 install:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then sh travis/install.sh; fi
+
 
 script:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then sh travis/test_and_package.sh; fi
