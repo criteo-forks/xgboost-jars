@@ -8,7 +8,7 @@ yum -y clean expire-cache
 yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-6.noarch.rpm
 
 yum -y install wget tar cmake3 zlib-devel \
-    python34 java-1.8.0-openjdk-devel maven
+    python34 java-1.8.0-openjdk-devel
 
 # Setup SCL for newer GCC.
 yum -y install centos-release-scl-rh
@@ -21,9 +21,9 @@ export CXX=/opt/rh/devtoolset-4/root/usr/bin/c++
 cd /xgboost-jars
 
 # No Maven on CentOS6.
-wget -qc http://mirrors.ircam.fr/pub/apache/maven/maven-3/3.5.0/binaries/apache-maven-3.5.0-bin.tar.gz
-tar -zxf apache-maven-3.5.0-bin.tar.gz
-export PATH=$PWD/apache-maven-3.5.0/bin:$PATH
+wget -qc http://mirrors.ircam.fr/pub/apache/maven/maven-3/3.5.2/binaries/apache-maven-3.5.2-bin.tar.gz
+tar -zxf apache-maven-3.5.2-bin.tar.gz
+export PATH=$PWD/apache-maven-3.5.2/bin:$PATH
 
 # CMake3 is not aliased to ``cmake``
 ln -s /usr/bin/cmake3 /usr/bin/cmake
