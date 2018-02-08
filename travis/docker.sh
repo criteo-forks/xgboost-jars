@@ -12,7 +12,7 @@ yum -y install wget tar cmake3 zlib-devel \
 
 # Setup SCL for newer GCC.
 yum -y install centos-release-scl-rh
-yum -y install devtoolset-4-{gcc,gcc-c++}
+yum -y install devtoolset-4-{gcc,gcc,c++}
 
 source /opt/rh/devtoolset-4/enable
 export CC=/opt/rh/devtoolset-4/root/usr/bin/gcc
