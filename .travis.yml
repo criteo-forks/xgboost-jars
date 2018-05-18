@@ -12,11 +12,11 @@ matrix:
 
 env:
   global:
-    - XGBOOST_VERSION=0.7-criteo-20171220
     - LIBHDFS_DIR=$HOME/libhdfs-dev
     - HADOOP_VERSION=2.6.0-cdh5.5.0
     - SCALA_VERSION=2.10.6
-    - SPARK_VERSION=2.1.0
+    - SPARK_VERSION=2.3.0
+    - XGBOOST_VERSION=0.8-criteo-20180518_${SCALA_VERSION%.*}
 
 before_install:
   - git submodule foreach --recursive git pull origin master
