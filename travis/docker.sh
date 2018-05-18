@@ -21,9 +21,9 @@ export CXX=/opt/rh/devtoolset-4/root/usr/bin/c++
 cd /xgboost-jars
 
 # No Maven on CentOS6.
-wget -qc http://mirrors.ircam.fr/pub/apache/maven/maven-3/3.5.2/binaries/apache-maven-3.5.2-bin.tar.gz
-tar -zxf apache-maven-3.5.2-bin.tar.gz
-export PATH=$PWD/apache-maven-3.5.2/bin:$PATH
+wget -qc http://mirrors.ircam.fr/pub/apache/maven/maven-3/3.5.3/binaries/apache-maven-3.5.3-bin.tar.gz
+tar -zxf apache-maven-3.5.3-bin.tar.gz
+export PATH=$PWD/apache-maven-3.5.3/bin:$PATH
 
 # CMake3 is not aliased to ``cmake``
 ln -s /usr/bin/cmake3 /usr/bin/cmake
