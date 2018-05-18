@@ -19,7 +19,6 @@ env:
     - XGBOOST_VERSION=0.8-criteo-20180518_${SCALA_VERSION%.*}
 
 before_install:
-  - git submodule foreach --recursive git pull origin master
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update; fi
 
 install:
