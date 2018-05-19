@@ -92,4 +92,6 @@ if __name__ == "__main__":
 
     run("mvn -q install -pl :xgboost4j,:xgboost4j-spark "
         "-DskipTests -Dmaven.test.skip",
-        env=dict(os.environ, HADOOP_HDFS_HOME=xgboost_dir))
+        env=dict(os.environ,
+                 HADOOP_HOME=xgboost_dir,
+                 HADOOP_HDFS_HOME=xgboost_dir))
