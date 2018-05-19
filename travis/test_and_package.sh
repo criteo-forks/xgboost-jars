@@ -1,5 +1,6 @@
 set -xe
 
+export HADOOP_HOME=$PWD/xgboost
 export HADOOP_HDFS_HOME=$PWD/xgboost
 
 cd xgboost/jvm-packages

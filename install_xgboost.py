@@ -46,7 +46,7 @@ if __name__ == "__main__":
         shutil.copy(os.path.join(libhdfs_dir, "winutils.exe"), "bin")
 
     # HACK: library name was changed in the latest version.
-    sed_inplace("CMakeLists.txt", "dmlccore", "dmlc")
+    # sed_inplace("CMakeLists.txt", "dmlccore", "dmlc")
 
     # HACK: patch FindHDFS to support Windows.
     sed_inplace(

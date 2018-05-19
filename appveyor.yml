@@ -5,12 +5,14 @@ environment:
   global:
     LIBHDFS_DIR: '%APPVEYOR_BUILD_FOLDER%\libhdfs-dev'
     HADOOP_VERSION: 2.6.0-cdh5.5.0
-    SPARK_VERSION: 2.3.0
-    SCALA_VERSION: 2.10.6
-    XGBOOST_VERSION: 0.8-criteo-20180518_2.10
+    SPARK_VERSION: 2.2.0
+    JAVA_HOME: C:\Program Files\Java\jdk1.8.0
+    XGBOOST_BASE_VERSION: 0.72-criteo-20180518
   matrix:
-    - JAVA_HOME: C:\Program Files\Java\jdk1.8.0
-    # - JAVA_HOME: C:\Program Files (x86)\Java\jdk1.8.0
+    - SCALA_VERSION: 2.10.7
+      XGBOOST_VERSION: '%XGBOOST_BASE_VERSION%__2.10'
+    - SCALA_VERSION: 2.11.12
+      XGBOOST_VERSION: '%XGBOOST_BASE_VERSION%__2.11'
 
 clone_script:
   - git clone -q --branch=%APPVEYOR_REPO_BRANCH% https://github.com/%APPVEYOR_REPO_NAME%.git %APPVEYOR_BUILD_FOLDER%

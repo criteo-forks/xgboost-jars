@@ -1,22 +1,41 @@
 language: java
 
+# TODO: is there a way to define the matrix avoiding duplication?
 matrix:
   include:
-    - os: linux
-      sudo: required
-      group: edge
-      services:
-        - docker
-    - os: osx
-      osx_image: xcode8
+  - os: linux
+    sudo: required
+    group: edge
+    services:
+      - docker
+    env:
+      - SCALA_VERSION=2.10.7
+      - XGBOOST_VERSION=${XGBOOST_BASE_VERSION}_2.10
+  - os: linux
+    sudo: required
+    group: edge
+    services:
+      - docker
+    env:
+      - SCALA_VERSION=2.11.12
+      - XGBOOST_VERSION=${XGBOOST_BASE_VERSION}_2.11
+  - os: osx
+    osx_image: xcode8
+    env:
+      - SCALA_VERSION=2.10.7
+      - XGBOOST_VERSION=${XGBOOST_BASE_VERSION}_2.10
+  - os: osx
+    osx_image: xcode8
+    env:
+      - SCALA_VERSION=2.11.12
+      - XGBOOST_VERSION=${XGBOOST_BASE_VERSION}_2.11
 
 env:
   global:
     - LIBHDFS_DIR=$HOME/libhdfs-dev
     - HADOOP_VERSION=2.6.0-cdh5.5.0
-    - SCALA_VERSION=2.10.6
-    - SPARK_VERSION=2.3.0
-    - XGBOOST_VERSION=0.8-criteo-20180518_${SCALA_VERSION%.*}
+    - SPARK_VERSION=2.2.0
+    - XGBOOST_BASE_VERSION=0.72-criteo-20180518
 
 before_install:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update; fi
