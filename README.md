@@ -18,8 +18,8 @@ Otherwise, the following versions of the dependencies are used
 
 ```
 HADOOP_VERSION=2.6.0-cdh5.5.0
-SPARK_VERSION=2.1.0
-SCALA_VERSION=2.10.6
+SPARK_VERSION=2.2.0
+SCALA_VERSION=2.10.7|2.11.12
 ```
 
 You could probably change them to more recent/different version, but this has
@@ -39,6 +39,6 @@ Release
 
 To make a release:
 
-- Bump `XGBOOST_VERSION` in `.travis.yml` and `appveyor.yml`.
-- Tag `master` with `XGBOOST_VERSION`.
+- Bump `XGBOOST_BASE_VERSION` in `.travis.yml` and `appveyor.yml`.
+- Tag `master` with `XGBOOST_BASE_VERSION`.
 - Wait :)

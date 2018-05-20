@@ -47,16 +47,17 @@ if __name__ == "__main__":
         asset_url = asset["browser_download_url"]
         urlretrieve(asset_url, os.path.basename(asset_url))
 
-    def versioned(s):
-        return s.format(latest_release["tag_name"])
+    for scala_binary_tag in ["2.10", "2.11"]:
+        def versioned(s):
+            return s.format(latest_release["tag_name"] + "_" + scala_binary_tag)
 
-    native_jars = [
-        versioned("xgboost4j-{}-win64.jar"),
-        versioned("xgboost4j-{}-osx.jar"),
-        versioned("xgboost4j-{}-linux.jar")
-    ]
-    merge_zip_files(versioned("xgboost4j-{}.jar"), native_jars)
-    for jar in native_jars:
-        os.remove(jar)
+        native_jars = [
+            versioned("xgboost4j-{}-win64.jar"),
+            versioned("xgboost4j-{}-osx.jar"),
+            versioned("xgboost4j-{}-linux.jar")
+        ]
+        merge_zip_files(versioned("xgboost4j-{}.jar"), native_jars)
+        for jar in native_jars:
+            os.remove(jar)
 
     print(*glob.glob("xgboost*"), sep="\n")
