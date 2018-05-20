@@ -57,7 +57,7 @@ artifacts:
 
 deploy:
   provider: GitHub
-  tag: '$(XGBOOST_VERSION)'
+  tag: '$(XGBOOST_BASE_VERSION)'
   description: ''
   force_update: true
   auth_token:
