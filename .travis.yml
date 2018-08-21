@@ -9,21 +9,8 @@ matrix:
     services:
       - docker
     env:
-      - SCALA_VERSION=2.10.7
-      - XGBOOST_VERSION=${XGBOOST_BASE_VERSION}_2.10
-  - os: linux
-    sudo: required
-    group: edge
-    services:
-      - docker
-    env:
       - SCALA_VERSION=2.11.12
       - XGBOOST_VERSION=${XGBOOST_BASE_VERSION}_2.11
-  - os: osx
-    osx_image: xcode8
-    env:
-      - SCALA_VERSION=2.10.7
-      - XGBOOST_VERSION=${XGBOOST_BASE_VERSION}_2.10
   - os: osx
     osx_image: xcode8
     env:
@@ -35,7 +22,7 @@ env:
     - LIBHDFS_DIR=$HOME/libhdfs-dev
     - HADOOP_VERSION=2.6.0-cdh5.5.0
     - SPARK_VERSION=2.3.1
-    - XGBOOST_BASE_VERSION=0.72-criteo-20180518
+    - XGBOOST_BASE_VERSION=0.81-criteo-20180821
 
 before_install:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update; fi

@@ -12,18 +12,18 @@ yum -y install wget tar cmake3 zlib-devel \
 
 # Setup SCL for newer GCC.
 yum -y install centos-release-scl-rh
-yum -y install devtoolset-4-{gcc,gcc-c++}
+yum -y install devtoolset-6-{gcc,gcc-c++}
 
-source /opt/rh/devtoolset-4/enable
-export CC=/opt/rh/devtoolset-4/root/usr/bin/gcc
-export CXX=/opt/rh/devtoolset-4/root/usr/bin/c++
+source /opt/rh/devtoolset-6/enable
+export CC=/opt/rh/devtoolset-6/root/usr/bin/gcc
+export CXX=/opt/rh/devtoolset-6/root/usr/bin/c++
 
 cd /xgboost-jars
 
 # No Maven on CentOS6.
-wget -qc http://mirrors.ircam.fr/pub/apache/maven/maven-3/3.5.3/binaries/apache-maven-3.5.3-bin.tar.gz
-tar -zxf apache-maven-3.5.3-bin.tar.gz
-export PATH=$PWD/apache-maven-3.5.3/bin:$PATH
+wget -qc http://apache.mindstudios.com/maven/maven-3/3.5.4/binaries/apache-maven-3.5.4-bin.tar.gz
+tar -zxf apache-maven-3.5.4-bin.tar.gz
+export PATH=$PWD/apache-maven-3.5.4/bin:$PATH
 
 # CMake3 is not aliased to ``cmake``
 ln -s /usr/bin/cmake3 /usr/bin/cmake
