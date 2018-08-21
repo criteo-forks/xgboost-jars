@@ -47,7 +47,7 @@ if __name__ == "__main__":
         asset_url = asset["browser_download_url"]
         urlretrieve(asset_url, os.path.basename(asset_url))
 
-    for scala_binary_tag in ["2.10", "2.11"]:
+    for scala_binary_tag in ["2.11"]:
         def versioned(s):
             return s.format(latest_release["tag_name"] + "_" + scala_binary_tag)
 
