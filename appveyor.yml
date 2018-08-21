@@ -5,7 +5,7 @@ environment:
   global:
     LIBHDFS_DIR: '%APPVEYOR_BUILD_FOLDER%\libhdfs-dev'
     HADOOP_VERSION: 2.6.0-cdh5.5.0
-    SPARK_VERSION: 2.2.0
+    SPARK_VERSION: 2.3.1
     JAVA_HOME: C:\Program Files\Java\jdk1.8.0
     XGBOOST_BASE_VERSION: 0.72-criteo-20180518
   matrix:
