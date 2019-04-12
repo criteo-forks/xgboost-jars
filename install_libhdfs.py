@@ -75,10 +75,18 @@ def install_dependencies():
             os.environ["HADOOP_PROTOC_CDH5_PATH"] = \
                 os.path.join(os.getcwd(), "src", "protoc")
     elif sys.platform == "darwin":
-        run("brew install protobuf@2.5", stdout=open(os.devnull, "wb"))
-        os.environ["HADOOP_PROTOC_CDH5_PATH"] = \
-            "/usr/local/opt/protobuf@2.5/bin/protoc"
+        protobuf_archive, _headers = urlretrieve(
+            "https://github.com/google/protobuf/releases/download/"
+            "v2.5.0/protobuf-2.5.0.zip")
+        with zipfile.ZipFile(protobuf_archive, "r") as zf:
+            zf.extractall()
 
+        with cd("protobuf-2.5.0"):
+            run("sh configure")
+            run("make")
+
+            os.environ["HADOOP_PROTOC_CDH5_PATH"] = \
+                os.path.join(os.getcwd(), "src", "protoc")
         # Make maven-antrun-plugin happy and put tools.jar to the
         # magical place.
         java_home = os.environ["JAVA_HOME"] = subprocess.check_output(
