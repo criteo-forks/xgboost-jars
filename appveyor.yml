@@ -59,6 +59,6 @@ deploy:
   description: ''
   force_update: true
   auth_token:
-    secure: 'GAsVDc+Y0V9vOCuF+W9l7RVr2r1IoOgRfuRm6Jgd3fjIgylg2C4wudvzI25D4XYD'
+    secure: zsTkcMfIUdKR9fGg3H9qBSrAqT/XjaZgCHaBTUb7HQmQDBdS2ilc//dXRm1Qq2hM
   on:
     appveyor_repo_tag: true
