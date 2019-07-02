@@ -21,8 +21,8 @@ env:
   global:
     - LIBHDFS_DIR=$HOME/libhdfs-dev
     - HADOOP_VERSION=2.6.0-cdh5.5.0
-    - SPARK_VERSION=2.3.1
-    - XGBOOST_BASE_VERSION=0.82-criteo-20190412
+    - SPARK_VERSION=2.4.1
+    - XGBOOST_BASE_VERSION=0.90-criteo-20190702
 
 before_install:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update; fi
