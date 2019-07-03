@@ -18,7 +18,7 @@ Otherwise, the following versions of the dependencies are used
 
 ```
 HADOOP_VERSION=2.6.0-cdh5.5.0
-SPARK_VERSION=2.3.1
+SPARK_VERSION=2.4.1
 SCALA_VERSION=2.11.12
 ```
 
