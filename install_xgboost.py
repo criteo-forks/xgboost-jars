@@ -5,7 +5,6 @@ Environment variables:
 * XGBOOST_VERSION
 * SCALA_VERSION
 * SPARK_VERSION
-* LIBHDFS_DIR containing libhdfs.{so,a} and hdfs.h
 """
 
 from __future__ import print_function, unicode_literals
@@ -20,51 +19,6 @@ from _internal import run, sed_inplace, maybe_makedirs
 if __name__ == "__main__":
     os.chdir("xgboost")
     xgboost_dir = os.getcwd()
-    maybe_makedirs(os.path.join("lib", "native"))
-    maybe_makedirs(os.path.join("lib", "include"))
-
-    libhdfs_shared = {
-        "win32": "hdfs.dll",
-        "linux": "libhdfs.so",
-        "darwin": "libhdfs.dylib"
-    }[sys.platform]
-    libhdfs_static = {
-        "win32": "hdfs.lib",
-        "linux": "libhdfs.a",
-        "darwin": "libhdfs.a"
-    }[sys.platform]
-
-    libhdfs_dir = os.environ["LIBHDFS_DIR"]
-    shutil.copy(os.path.join(libhdfs_dir, libhdfs_static),
-                os.path.join("lib", "native"))
-    shutil.copy(os.path.join(libhdfs_dir, libhdfs_shared),
-                os.path.join("lib", "native"))
-    shutil.copy(os.path.join(libhdfs_dir, "hdfs.h"), "include")
-
-    if sys.platform == "win32":
-        maybe_makedirs("bin")
-        shutil.copy(os.path.join(libhdfs_dir, "winutils.exe"), "bin")
-
-    # HACK: library name was changed in the latest version.
-    # sed_inplace("CMakeLists.txt", "dmlccore", "dmlc")
-
-    # HACK: patch FindHDFS to support Windows.
-    sed_inplace(
-        "dmlc-core/cmake/Modules/FindHDFS.cmake",
-        "libhdfs.a",
-        "${CMAKE_STATIC_LIBRARY_PREFIX}hdfs${CMAKE_STATIC_LIBRARY_SUFFIX}")
-
-    # HACK: link with static libhdfs.
-    sed_inplace(
-        "dmlc-core/CMakeLists.txt",
-        "list(APPEND dmlccore_LINKER_LIBS ${HDFS_LIBRARIES}",
-        "list(APPEND dmlccore_LINKER_LIBS ${HDFS_STATIC_LIB}")
-
-    # HACK: add missing header.
-    sed_inplace(
-        "dmlc-core/src/io/hdfs_filesys.cc",
-        "// Copyright by Contributors",
-        "#include <algorithm>")
 
     os.chdir("jvm-packages")
     run("mvn -q -B versions:set -DnewVersion=" + os.environ["XGBOOST_VERSION"])
@@ -87,8 +41,6 @@ if __name__ == "__main__":
     sed_inplace("create_jni.py",
                 "cmake ..",
                 "cmake .. -DCMAKE_BUILD_TYPE=Release ")
-
-    sed_inplace("create_jni.py", '"USE_HDFS": "OFF"', '"USE_HDFS": "ON"')
 
     run("mvn -q install -pl :xgboost4j,:xgboost4j-spark "
         "-DskipTests -Dmaven.test.skip",
