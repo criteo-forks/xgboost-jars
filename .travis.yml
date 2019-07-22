@@ -19,7 +19,6 @@ matrix:
 
 env:
   global:
-    - LIBHDFS_DIR=$HOME/libhdfs-dev
     - HADOOP_VERSION=2.6.0-cdh5.5.0
     - SPARK_VERSION=2.4.1
     - XGBOOST_BASE_VERSION=0.90-criteo-20190702
@@ -36,7 +35,6 @@ script:
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
         docker run
             -e XGBOOST_VERSION
-            -e LIBHDFS_DIR
             -e HADOOP_VERSION
             -e SCALA_VERSION
             -e SPARK_VERSION
@@ -45,10 +43,6 @@ script:
             centos:centos6
             /bin/bash -c "bash -xe /xgboost-jars/travis/docker.sh";
     fi
-
-cache:
-  directories:
-    - $LIBHDFS_DIR
 
 deploy:
   provider: releases
