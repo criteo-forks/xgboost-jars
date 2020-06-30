@@ -42,8 +42,8 @@ if __name__ == "__main__":
                 "cmake ..",
                 "cmake .. -DCMAKE_BUILD_TYPE=Release ")
 
-    run("mvn -q install -pl :xgboost4j,:xgboost4j-spark "
-        "-DskipTests -Dmaven.test.skip",
+    run("mvn -q install -pl xgboost4j,xgboost4j-spark "
+        "-DskipTests -Dmaven.test.skip -e",
         env=dict(os.environ,
                  HADOOP_HOME=xgboost_dir,
                  HADOOP_HDFS_HOME=xgboost_dir))
