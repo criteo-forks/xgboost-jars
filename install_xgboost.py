@@ -36,14 +36,34 @@ if __name__ == "__main__":
     sed_inplace("pom.xml",
                 "<spark.version>[^<]+",
                 "<spark.version>" + os.environ["SPARK_VERSION"], regex=True)
-
+    sed_inplace("pom.xml",
+                "<artifactId>xgboost-jvm_[^<]+",
+                "<artifactId>xgboost-jvm_" + scala_binary_version, regex=True)
     # HACK: build release.
     sed_inplace("create_jni.py",
                 "cmake ..",
                 "cmake .. -DCMAKE_BUILD_TYPE=Release ")
 
-    run("mvn -q install -pl xgboost4j,xgboost4j-spark "
-        "-DskipTests -Dmaven.test.skip -e",
-        env=dict(os.environ,
-                 HADOOP_HOME=xgboost_dir,
-                 HADOOP_HDFS_HOME=xgboost_dir))
+    os.chdir("xgboost4j")
+    sed_inplace("pom.xml",
+                "<artifactId>xgboost-jvm_[^<]+",
+                "<artifactId>xgboost-jvm_" + scala_binary_version, regex=True)
+    sed_inplace("pom.xml",
+                "<artifactId>xgboost4j_[^<]+",
+                "<artifactId>xgboost4j_" + scala_binary_version, regex=True)
+
+    os.chdir("../xgboost4j-spark")
+    sed_inplace("pom.xml",
+                "<artifactId>xgboost-jvm_[^<]+",
+                "<artifactId>xgboost-jvm_" + scala_binary_version, regex=True)
+    sed_inplace("pom.xml",
+                "<artifactId>xgboost4j-spark_[^<]+",
+                "<artifactId>xgboost4j-spark_" + scala_binary_version, regex=True)
+    sed_inplace("pom.xml",
+            "<version>1.1.0</version>",
+            "<version>" + os.environ["XGBOOST_VERSION"] + "</version>", regex=True)
+
+    os.chdir("../dev")
+    sed_inplace("package-linux.sh",
+                "mvn --batch-mode clean package -DskipTests",
+                "mvn install -pl xgboost4j,xgboost4j-spark -am -DskipTests -Dmaven.test.skip")
