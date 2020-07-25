@@ -10,7 +10,8 @@ environment:
     XGBOOST_BASE_VERSION: 1.1.0-criteo-20200630-d6d8be65
   matrix:
     - SCALA_VERSION: 2.11.12
-      XGBOOST_VERSION: '%XGBOOST_BASE_VERSION%_2.11'
+      SCALA_BINARY_VERSION: 2.11
+      XGBOOST_VERSION: "%XGBOOST_BASE_VERSION%_2.11"
 
 clone_script:
   - git clone -q --branch=%APPVEYOR_REPO_BRANCH% https://github.com/%APPVEYOR_REPO_NAME%.git %APPVEYOR_BUILD_FOLDER%
@@ -27,36 +28,32 @@ build_script:
 
 test_script:
   - cd xgboost
-  - 'SET HADOOP_HDFS_HOME=%CD%'
+  - "SET HADOOP_HDFS_HOME=%CD%"
   - cd jvm-packages
-  - mvn -q package -pl xgboost4j
+  - mvn package -pl xgboost4j -DskipTests
   # 'kryoSerializer test' in xgboost4j-spark seems to fail on Windows.
   # The issue has been reported upstream, see dmlc/xgboost#2394.
-  - mvn -q package -pl xgboost4j-spark -am -DskipTests -Dmaven.test.skip -Prelease
-  - 'copy xgboost4j\target\xgboost4j-%XGBOOST_VERSION%.jar
-         %APPVEYOR_BUILD_FOLDER%\xgboost4j-%XGBOOST_VERSION%-win64.jar'
-  - 'copy xgboost4j\target\xgboost4j-%XGBOOST_VERSION%-sources.jar
-         %APPVEYOR_BUILD_FOLDER%\xgboost4j-%XGBOOST_VERSION%-sources.jar'
-  - 'copy xgboost4j-spark\target\xgboost4j-spark-%XGBOOST_VERSION%.jar
-         %APPVEYOR_BUILD_FOLDER%\xgboost4j-spark-%XGBOOST_VERSION%.jar'
-  - 'copy xgboost4j-spark\target\xgboost4j-spark-%XGBOOST_VERSION%-sources.jar
-         %APPVEYOR_BUILD_FOLDER%\xgboost4j-spark-%XGBOOST_VERSION%-sources.jar'
-  - 'copy pom.xml %APPVEYOR_BUILD_FOLDER%\xgboost-jvm-%XGBOOST_VERSION%.pom'
+  - mvn package -pl xgboost4j-spark -am -DskipTests -Dmaven.test.skip
+  - 'copy xgboost4j\target\xgboost4j_%SCALA_BINARY_VERSION%-%XGBOOST_VERSION%.jar %APPVEYOR_BUILD_FOLDER%\xgboost4j_%SCALA_BINARY_VERSION%-%XGBOOST_VERSION%-win64.jar'
+  #- 'copy xgboost4j\target\xgboost4j_%SCALA_BINARY_VERSION%-%XGBOOST_VERSION%-sources.jar %APPVEYOR_BUILD_FOLDER%\xgboost4j_%SCALA_BINARY_VERSION%-%XGBOOST_VERSION%-sources.jar'
+  - 'copy xgboost4j-spark\target\xgboost4j-spark_%SCALA_BINARY_VERSION%-%XGBOOST_VERSION%.jar %APPVEYOR_BUILD_FOLDER%\xgboost4j-spark_%SCALA_BINARY_VERSION%-%XGBOOST_VERSION%.jar'
+  #- 'copy xgboost4j-spark\target\xgboost4j-spark_%SCALA_BINARY_VERSION%-%XGBOOST_VERSION%-sources.jar %APPVEYOR_BUILD_FOLDER%\xgboost4j-spark_%SCALA_BINARY_VERSION%-%XGBOOST_VERSION%-sources.jar'
+  - 'copy pom.xml %APPVEYOR_BUILD_FOLDER%\xgboost-jvm_%SCALA_BINARY_VERSION%-%XGBOOST_VERSION%.pom'
 
 cache:
-  - '%LIBHDFS_DIR%'
+  - "%LIBHDFS_DIR%"
 
 artifacts:
-  - path: 'xgboost-jvm-%XGBOOST_VERSION%.pom'
-  - path: 'xgboost4j-%XGBOOST_VERSION%-win64.jar'
-  - path: 'xgboost4j-%XGBOOST_VERSION%-sources.jar'
-  - path: 'xgboost4j-spark-%XGBOOST_VERSION%.jar'
-  - path: 'xgboost4j-spark-%XGBOOST_VERSION%-sources.jar'
+  - path: "xgboost-jvm_%SCALA_BINARY_VERSION%-%XGBOOST_VERSION%.pom"
+  - path: "xgboost4j_%SCALA_BINARY_VERSION%-%XGBOOST_VERSION%-win64.jar"
+  #- path: "xgboost4j_%SCALA_BINARY_VERSION%-%XGBOOST_VERSION%-sources.jar"
+  - path: "xgboost4j-spark_%SCALA_BINARY_VERSION%-%XGBOOST_VERSION%.jar"
+  #- path: "xgboost4j-spark_%SCALA_BINARY_VERSION%-%XGBOOST_VERSION%-sources.jar"
 
 deploy:
   provider: GitHub
-  tag: '$(XGBOOST_BASE_VERSION)'
-  description: ''
+  tag: "$(XGBOOST_BASE_VERSION)"
+  description: ""
   force_update: true
   auth_token:
     secure: zsTkcMfIUdKR9fGg3H9qBSrAqT/XjaZgCHaBTUb7HQmQDBdS2ilc//dXRm1Qq2hM
