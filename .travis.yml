@@ -11,19 +11,21 @@ matrix:
       env:
         - SCALA_VERSION=2.11.12
         - SCALA_BINARY_VERSION=2.11
-        - XGBOOST_VERSION=${XGBOOST_BASE_VERSION}_2.11
+        - XGBOOST_COMPLETE_VERSION=${SCALA_BINARY_VERSION}-${XGBOOST_BASE_VERSION}
+
     - os: osx
       osx_image: xcode9.3
       env:
         - SCALA_VERSION=2.11.12
         - SCALA_BINARY_VERSION=2.11
-        - XGBOOST_VERSION=${XGBOOST_BASE_VERSION}_2.11
+        - XGBOOST_COMPLETE_VERSION=${SCALA_BINARY_VERSION}-${XGBOOST_BASE_VERSION}
 
 env:
   global:
     - HADOOP_VERSION=2.6.0-cdh5.5.0
     - SPARK_VERSION=2.4.1
-    - XGBOOST_BASE_VERSION=1.1.0-criteo-20200630-d6d8be65
+    - XGBOOST_VERSION_DMLC=1.1.0
+    - XGBOOST_BASE_VERSION=${XGBOOST_VERSION_DMLC}-criteo-20200801-0dbc57aa
 
 before_install:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
@@ -39,8 +41,8 @@ script:
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
     sh travis/install.sh;
     sh xgboost/jvm-packages/dev/build-linux.sh --skip-tests;
-    cp xgboost/jvm-packages/xgboost4j/target/xgboost4j_$SCALA_BINARY_VERSION-$XGBOOST_VERSION.jar $TRAVIS_BUILD_DIR/xgboost4j_$SCALA_BINARY_VERSION-$XGBOOST_VERSION-$TRAVIS_OS_NAME.jar;
-    cp xgboost/jvm-packages/xgboost4j-spark/target/xgboost4j-spark_$SCALA_BINARY_VERSION-$XGBOOST_VERSION.jar $TRAVIS_BUILD_DIR/xgboost4j-spark_$SCALA_BINARY_VERSION-$XGBOOST_VERSION.jar;
+    cp xgboost/jvm-packages/xgboost4j/target/xgboost4j_$XGBOOST_COMPLETE_VERSION.jar $TRAVIS_BUILD_DIR/xgboost4j_$XGBOOST_COMPLETE_VERSION-$TRAVIS_OS_NAME.jar;
+    cp xgboost/jvm-packages/xgboost4j-spark/target/xgboost4j-spark_$XGBOOST_COMPLETE_VERSION.jar $TRAVIS_BUILD_DIR/xgboost4j-spark_$XGBOOST_COMPLETE_VERSION.jar;
     fi;
 
 deploy:
@@ -48,8 +50,8 @@ deploy:
   api_key:
     secure: j6jqSH+xk8bdMqLmO9F+ziTyFROW2UqF6WPyJsBdqE0PVkqFj4Hnc4ML4G1HVrtzvL2+5dkj6Y8i2r6eTumHYlVkjeVGJlPEwQCIH7Jj1uGnEgr/sSt2S19pbdP4mLaTF7U1EJNsHXwG6iD3h8Gu9czC4xeK0XYdc9bC7QcYjCPodeIVoqRY4rd98yLAjOyacg2aXyPuoxgXJQAuLyEyo44vtXx/aeCAeI4qsC5yTfSKYX3LBSPv38Pu1jMIIOf3fhvEFKy002yGnMPoFIBK9Q62oI7mVn8LeqvDfsqeYXskfHxA1LjKR+vP9yATn+9i2l4y0QOJj7+JpeSWbEjOuzNfZX9vuLXtEi9aAHEUMyy6ZvM9MVp55OBKUSWHhsimtWKiE2Ey1bl8Tjr6As0ntArzrL5XO2aYrdpJiCzgkw0OO5XcmOLG5h8dHZzfPVKH45yheutWFm73kr9z75V665W/yQ4YMAsw5OjXhDnLosFkd+GkOAzGh3Chbbv9sA0U1emCvnr+ajAPUkTAtAf/J7fw3DD0nuunR60rw7DZnVX0TB21v3OF+15/qvFhOQmNo68ES+8O4DIXn5NZdQy71JSdsbnM1LpMjmQ8gPu0O+hFRaUKqdS0a0MHT7NfrbZ8t25fGnAK81OLb/PTuhzsI81jwbWpV1kRo2Xi/ofEOQw=
   file:
-    - xgboost4j_$SCALA_BINARY_VERSION-$XGBOOST_VERSION-$TRAVIS_OS_NAME.jar
-    - xgboost4j-spark_$SCALA_BINARY_VERSION-$XGBOOST_VERSION.jar
+    - xgboost4j_$XGBOOST_COMPLETE_VERSION-$TRAVIS_OS_NAME.jar
+    - xgboost4j-spark_$XGBOOST_COMPLETE_VERSION.jar
   skip_cleanup: true
   overwrite: true
   on:

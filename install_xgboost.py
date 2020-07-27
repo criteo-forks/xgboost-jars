@@ -21,7 +21,7 @@ if __name__ == "__main__":
     xgboost_dir = os.getcwd()
 
     os.chdir("jvm-packages")
-    run("mvn -q -B versions:set -DnewVersion=" + os.environ["XGBOOST_VERSION"])
+    run("mvn -q -B versions:set -DnewVersion=" + os.environ["XGBOOST_BASE_VERSION"])
 
     # versions:update-property only updates properties which define
     # artifact versions, therefore we have to resort to sed.
@@ -60,8 +60,8 @@ if __name__ == "__main__":
                 "<artifactId>xgboost4j-spark_[^<]+",
                 "<artifactId>xgboost4j-spark_" + scala_binary_version, regex=True)
     sed_inplace("pom.xml",
-            "<version>1.1.0</version>",
-            "<version>" + os.environ["XGBOOST_VERSION"] + "</version>", regex=True)
+            "<version>"+ os.environ["XGBOOST_VERSION_DMLC"] + "</version>",
+            "<version>" + os.environ["XGBOOST_BASE_VERSION"] + "</version>", regex=True)
 
     os.chdir("../dev")
     sed_inplace("package-linux.sh",
