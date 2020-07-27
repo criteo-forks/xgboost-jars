@@ -49,14 +49,14 @@ if __name__ == "__main__":
 
     for scala_binary_tag in ["2.11"]:
         def versioned(s):
-            return s.format(latest_release["tag_name"] + "_" + scala_binary_tag)
+            return s.format(scala_binary_tag + "-" + latest_release["tag_name"])
 
         native_jars = [
-            versioned("xgboost4j-{}-win64.jar"),
-            versioned("xgboost4j-{}-osx.jar"),
-            versioned("xgboost4j-{}-linux.jar")
+            versioned("xgboost4j_{}-win64.jar"),
+            versioned("xgboost4j_{}-osx.jar"),
+            versioned("xgboost4j_{}-linux.jar")
         ]
-        merge_zip_files(versioned("xgboost4j-{}.jar"), native_jars)
+        merge_zip_files(versioned("xgboost4j_{}.jar"), native_jars)
         for jar in native_jars:
             os.remove(jar)
 
