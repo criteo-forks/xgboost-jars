@@ -52,11 +52,11 @@ artifacts:
   - path: "xgboost4j-spark_%XGBOOST_COMPLETE_VERSION%-sources.jar"
 
 deploy:
-  provider: GitHub
-  tag: "$(XGBOOST_BASE_VERSION)"
-  description: ""
-  force_update: true
-  auth_token:
-    secure: qeS5O5qB2zkwG17Nh/wr+edLYx6LWG8KkuOhp4XV11yuse1CVc+zHfDqn/AccPYo
-  on:
-    appveyor_repo_tag: true
+  - provider: GitHub
+    tag: "$(XGBOOST_BASE_VERSION)"
+    description: ""
+    force_update: true
+    auth_token:
+      secure: EkLV99IxcQ8ah4g1SsuHzL6WuQR2TJczS7xqCHUX9mWNHrgvNvDNtbjMuDMJer/4
+    on:
+      appveyor_repo_tag: true
