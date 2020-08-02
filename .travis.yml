@@ -25,7 +25,7 @@ env:
     - HADOOP_VERSION=2.6.0-cdh5.5.0
     - SPARK_VERSION=2.4.1
     - XGBOOST_VERSION_DMLC=1.1.0
-    - XGBOOST_BASE_VERSION=${XGBOOST_VERSION_DMLC}-criteo-20200801-0dbc57aa
+    - XGBOOST_BASE_VERSION=${XGBOOST_VERSION_DMLC}-criteo-20200802-071ef500
 
 before_install:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
