@@ -31,14 +31,14 @@ test_script:
   - cd xgboost
   - "SET HADOOP_HDFS_HOME=%CD%"
   - cd jvm-packages
-  - mvn package -pl xgboost4j -DskipTests
+  - mvn package -pl xgboost4j -DskipTests -Psources
   # 'kryoSerializer test' in xgboost4j-spark seems to fail on Windows.
   # The issue has been reported upstream, see dmlc/xgboost#2394.
-  - mvn package -pl xgboost4j-spark -am -DskipTests -Dmaven.test.skip
+  - mvn package -pl xgboost4j-spark -am -DskipTests -Dmaven.test.skip -Psources
   - 'copy xgboost4j\target\xgboost4j_%XGBOOST_COMPLETE_VERSION%.jar %APPVEYOR_BUILD_FOLDER%\xgboost4j_%XGBOOST_COMPLETE_VERSION%-win64.jar'
-  #- 'copy xgboost4j\target\xgboost4j_%XGBOOST_COMPLETE_VERSION%-sources.jar %APPVEYOR_BUILD_FOLDER%\xgboost4j_%XGBOOST_COMPLETE_VERSION%-sources.jar'
+  - 'copy xgboost4j\target\xgboost4j_%XGBOOST_COMPLETE_VERSION%-sources.jar %APPVEYOR_BUILD_FOLDER%\xgboost4j_%XGBOOST_COMPLETE_VERSION%-sources.jar'
   - 'copy xgboost4j-spark\target\xgboost4j-spark_%XGBOOST_COMPLETE_VERSION%.jar %APPVEYOR_BUILD_FOLDER%\xgboost4j-spark_%XGBOOST_COMPLETE_VERSION%.jar'
-  #- 'copy xgboost4j-spark\target\xgboost4j-spark_%XGBOOST_COMPLETE_VERSION%-sources.jar %APPVEYOR_BUILD_FOLDER%\xgboost4j-spark_%XGBOOST_COMPLETE_VERSION%-sources.jar'
+  - 'copy xgboost4j-spark\target\xgboost4j-spark_%XGBOOST_COMPLETE_VERSION%-sources.jar %APPVEYOR_BUILD_FOLDER%\xgboost4j-spark_%XGBOOST_COMPLETE_VERSION%-sources.jar'
   - 'copy pom.xml %APPVEYOR_BUILD_FOLDER%\xgboost-jvm_%XGBOOST_COMPLETE_VERSION%.pom'
 
 cache:
@@ -47,9 +47,9 @@ cache:
 artifacts:
   - path: "xgboost-jvm_%XGBOOST_COMPLETE_VERSION%.pom"
   - path: "xgboost4j_%XGBOOST_COMPLETE_VERSION%-win64.jar"
-  #- path: "xgboost4j_%XGBOOST_COMPLETE_VERSION%-sources.jar"
+  - path: "xgboost4j_%XGBOOST_COMPLETE_VERSION%-sources.jar"
   - path: "xgboost4j-spark_%XGBOOST_COMPLETE_VERSION%.jar"
-  #- path: "xgboost4j-spark_%XGBOOST_COMPLETE_VERSION%-sources.jar"
+  - path: "xgboost4j-spark_%XGBOOST_COMPLETE_VERSION%-sources.jar"
 
 deploy:
   provider: GitHub
