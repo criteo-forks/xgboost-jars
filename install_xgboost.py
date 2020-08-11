@@ -2,7 +2,7 @@
 Builds the JVM bindings for the latest xgboost.
 
 Environment variables:
-* XGBOOST_VERSION
+* XGBOOST_BASE_VERSION # The new version to use
 * SCALA_VERSION
 * SPARK_VERSION
 """
@@ -11,17 +11,19 @@ from __future__ import print_function, unicode_literals
 
 import os
 import re
-import shutil
-import sys
-from _internal import run, sed_inplace, maybe_makedirs
+from _internal import run, sed_inplace
 
 
 if __name__ == "__main__":
     os.chdir("xgboost")
     xgboost_dir = os.getcwd()
 
+    # Compute DMLC xgboost version, i.e: 1.1.0
+    xgboost_version = os.environ["XGBOOST_BASE_VERSION"]
+    [dmlc_version] = re.findall(r"^(.*?)-criteo", xgboost_version)
+
     os.chdir("jvm-packages")
-    run("mvn -q -B versions:set -DnewVersion=" + os.environ["XGBOOST_BASE_VERSION"])
+    run("mvn -q -B versions:set -DnewVersion=" + xgboost_version)
 
     # versions:update-property only updates properties which define
     # artifact versions, therefore we have to resort to sed.
@@ -60,10 +62,5 @@ if __name__ == "__main__":
                 "<artifactId>xgboost4j-spark_[^<]+",
                 "<artifactId>xgboost4j-spark_" + scala_binary_version, regex=True)
     sed_inplace("pom.xml",
-            "<version>"+ os.environ["XGBOOST_VERSION_DMLC"] + "</version>",
-            "<version>" + os.environ["XGBOOST_BASE_VERSION"] + "</version>", regex=True)
-
-    os.chdir("../dev")
-    sed_inplace("package-linux.sh",
-                "mvn --batch-mode clean package -DskipTests",
-                "mvn install -pl xgboost4j,xgboost4j-spark -am -DskipTests -Dmaven.test.skip")
+                "<version>" + dmlc_version + "</version>",
+                "<version>" + xgboost_version + "</version>", regex=True)

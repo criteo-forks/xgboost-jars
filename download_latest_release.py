@@ -8,8 +8,6 @@ from __future__ import print_function
 import json
 import glob
 import os
-import sys
-from collections import defaultdict
 from zipfile import ZipFile
 
 try:
