@@ -7,7 +7,7 @@ env:
   SPARK_VERSION: 2.4.1
   SCALA_VERSION: 2.11.12
   SCALA_BINARY_VERSION: 2.11
-  XGBOOST_BASE_VERSION: 1.1.0-criteo-20200807-071ef500
+  XGBOOST_BASE_VERSION: 1.1.0-criteo-20200812-071ef500
 
 jobs:
   build-jvm:
@@ -41,8 +41,13 @@ jobs:
           key: ${{ runner.os }}-m2-${{ hashFiles('./xgboost/jvm-packages/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
 
-      - name: Install JVM packages (Linux / MacOs)
-        if: runner.os == 'Linux' || runner.os == 'macOs'
+      - name: Install JVM packages (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          ./build_tools/launch.sh ${{ env.SPARK_VERSION }}
+
+      - name: Install JVM packages (MacOs)
+        if: runner.os == 'macOs'
         run: |
           cd xgboost/jvm-packages
           mvn package -q -pl xgboost4j,xgboost4j-spark -DskipTests -Psources
@@ -63,9 +68,7 @@ jobs:
       - name: Renaming file - Linux
         if: runner.os == 'Linux'
         run: |
-          cd xgboost/jvm-packages
-          mv xgboost4j/target/xgboost4j_${{ env.SCALA_BINARY_VERSION }}-${{ env.XGBOOST_BASE_VERSION}}.jar xgboost4j/target/xgboost4j_${{ env.SCALA_BINARY_VERSION }}-${{ env.XGBOOST_BASE_VERSION}}-linux.jar
-          mv pom.xml xgboost-jvm_${{ env.SCALA_BINARY_VERSION }}-${{ env.XGBOOST_BASE_VERSION}}.pom
+          cp xgboost/jvm-packages/xgboost4j/target/xgboost4j_${{ env.SCALA_BINARY_VERSION }}-${{ env.XGBOOST_BASE_VERSION}}.jar ./xgboost4j_${{ env.SCALA_BINARY_VERSION }}-${{ env.XGBOOST_BASE_VERSION}}-linux.jar
 
       - name: Renaming file - MacOs
         if: runner.os == 'macOs'
@@ -78,5 +81,5 @@ jobs:
         if: contains(github.ref, 'tags/')
         with:
           allowUpdates: true
-          artifacts: "./xgboost/jvm-packages/xgboost4j/target/*.jar,./xgboost/jvm-packages/xgboost4j-spark/target/*.jar,./xgboost/jvm-packages/*.pom"
+          artifacts: "./xgboost/jvm-packages/xgboost4j/target/*.jar,./xgboost/jvm-packages/xgboost4j-spark/target/*.jar,./xgboost/jvm-packages/*.pom,./xgboost4j_*.jar"
           token: ${{ secrets.GITHUB_TOKEN }}
